@@ -1,10 +1,14 @@
+# ide
 .idea
 .vscode
 
+# python
 .env
 .venv 
 
+#macos
 .DS_Store
 
+# cv branch
 uploads
 output
