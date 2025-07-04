@@ -17,8 +17,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     responseDiv.className = 'error';
                     responseDiv.textContent = 'Ошибка: ' + result.error;
                 } else {
-                    responseDiv.className = 'success';
-                    responseDiv.textContent = 'Успешно: ' + result.message;
+                    const sidebar = document.querySelector('.sidebar');
+                    if (sidebar) {
+                        sidebar.innerHTML = `
+                            <div class="logotip">
+                                <img src="static/images/yandex_icon.svg.png" class="logo">
+                                <span class="title">Топология</span>
+                            </div>
+                            <div class="zones file-section">
+                                <div class="inputs">
+                                    <p>Операционные зоны</p>
+                                    <input type="number" placeholder=" " class="size">
+                                </div>
+                            </div>
+                            <div class="robot file-section">
+                                <div class="inputs">
+                                    <p>Размеры робота</p>
+                                    <input type="number" placeholder=" " class="size">
+                                    <button type="button" id="clearRobotBtn" style="margin: 0 4px 0 4px;">×</button>
+                                    <input type="number" placeholder=" " class="size">
+                                </div>
+                            </div>
+                            <button class="upload-btn build-btn" style="margin-top:24px;">Построить сетку</button>
+                            <button class="upload-btn download-btn" style="background:#f2f2f2; color:#111;">Скачать файл</button>
+                        `;
+                        const clearRobotBtn = sidebar.querySelector('#clearRobotBtn');
+                        if (clearRobotBtn) {
+                            clearRobotBtn.addEventListener('click', function() {
+                                const robotInputs = sidebar.querySelectorAll('.robot .size');
+                                robotInputs.forEach(input => input.value = '');
+                            });
+                        }
+                    }
                 }
             } catch (error) {
                 responseDiv.className = 'error';
@@ -26,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-ы
+
     const fileInput = document.getElementById('fileInput');
     const fileNameSpan = document.getElementById('fileName');
     const fileBtn = document.getElementById('fileBtn');
