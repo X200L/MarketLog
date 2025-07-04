@@ -1,0 +1,194 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #F2F2F2;
+}
+
+.sidebar {
+    width: 320px;
+    background: #fff;
+    height: 100%;
+    padding: 32px 0 0 0;
+    box-sizing: border-box;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logotip {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px; 
+    width: 80%;
+    justify-content: flex-start;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 4px; 
+}
+
+.title {
+    font-size: 32px;
+    color: #000000;
+    font-family: Arial, sans-serif;
+}
+
+.file-section, .robot {
+    width: 80%;
+    margin-bottom: 24px;
+}
+
+.file-section label, .robot label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #000000;
+}
+
+#fileInput {
+    width: 100%;
+    background: #F2F2F2;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #F2F2F2;
+    border-radius: 16px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.size {
+    width: 48px;
+    padding: 4px;
+    font-size: 16px;
+    border: 0px;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.mult {
+    font-size: 24px;
+    color: #4A4A4A;
+    margin: 0 4px;
+}
+
+.upload-btn {
+    width: 80%;
+    padding: 16px 0;
+    background: #FDD329;
+    color: #222;
+    font-size: 24px;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: background 0.2s;
+}
+
+.upload-btn:hover {
+    background: #ffe666;
+}
+
+.main {
+    margin-left: 32%;
+    width: 68%; 
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+}
+
+.fon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 22px;
+}
+
+.fon_folder {
+    width: 90px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.fon_text {
+    color: rgba(74, 74, 74, 0.5);
+}
+
+.file-input {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #F2F2F2;
+    border-radius: 8px;
+    padding: 8px;
+    box-sizing: border-box;
+    gap: 8px;
+    position: relative;
+}
+
+.file-input input[type="file"] {
+    display: none;
+}
+
+.file-input #fileName {
+    flex: 1;
+    color: #888;
+    font-size: 16px;
+    padding-left: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-input #fileBtn {
+    background: #fff;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 18px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.file-input #fileBtn:hover {
+    background: #f1f1f1;
+}
+
+.section-label {
+    font-size: 15px;
+    color: #4A4A4A;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    transition: color 0.2s;
+}
+
+.file-section:focus-within .section-label,
+.robot:focus-within .section-label {
+    color: #222;
+}
+
+.success { background: #e8f5e9; color: #2e7d32; padding: 10px; margin-top: 10px; }
+.error { background: #ffebee; color: #c62828; padding: 10px; margin-top: 10px; }
