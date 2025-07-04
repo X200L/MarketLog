@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Topology</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <div class="sidebar">
@@ -14,10 +14,12 @@
         <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" class="file-section">
             <label for="fileInput" class="section-label">Файл</label>
             <div class="file-input">
-                <input type="file" id="fileInput" accept="image/*">
+                <input type="file" id="fileInput" name="file" accept="image/*">
                 <span id="fileName">Выберите файл</span>
                 <button type="button" id="fileBtn">Обзор</button>
             </div>
+            <button class="upload-btn" type="submit">Загрузить файл</button>
+        <div id="response"></div>
         </form>
         <div class="robot">
             <!-- <label class="section-label">Размеры робота</label> -->
@@ -39,6 +41,6 @@
         </div>
     </div>
     
-    <script src="app.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
