@@ -4,7 +4,7 @@
 
 # python
 .env
-.venv 
+.venv
 
 #macos
 .DS_Store
