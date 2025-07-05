@@ -15,5 +15,6 @@ def coloring_cell(file_path, x, y, size, color, width_line=0):
 
 
 if __name__ == "__main__":
-    coloring_cell('../mesh_of_warehouse/warehouse_meshed.png', 0, 0,
+    coloring_cell('Mesher/mesh_of_warehouse/warehouse_meshed.png',
+                  0, 0,
                   10, (0, 100, 100), width_line=1)

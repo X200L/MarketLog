@@ -1,13 +1,12 @@
 import numpy as np
 
 from PIL import ImageDraw, Image
-from usr_lib.add_borders import add_borders
-from usr_lib.create_graph import create_graph
-from usr_lib.coloring_cell import coloring_cell
-
+from Mesher.usr_lib.add_borders import add_borders
+from Mesher.usr_lib.create_graph import create_graph
+from Mesher.usr_lib.coloring_cell import coloring_cell
 
 def mesh_function(image_path, operation_zone_x, operation_zone_y,
-                  size=10, color_cell="black", width_line=1, epsilon=0.05):
+                  size=10, color_cell="black", width_line=1, epsilon=0.00):
     # функция для разбиения схемы склада рабочие области
 
     """функция возвращает изменённую фотографию и
@@ -24,10 +23,10 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
     top = size - offset_y
     bottom = size - ((height + top) % size)
 
-    add_borders(image_path, '../tmp_photo/bordered_image.png',
+    add_borders(image_path, 'Mesher/tmp_photo/bordered_image.png',
                 left, right, top, bottom)
 
-    pixels = np.array(Image.open('../tmp_photo/bordered_image.png'))
+    pixels = np.array(Image.open('Mesher/tmp_photo/bordered_image.png'))
 
     height += top + bottom
     width += left + right
@@ -61,9 +60,10 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
                 for y_cell in range(size * (kx - 1), size * kx):
                     pixels[x_cell][y_cell] = np.array(color)
 
-    Image.fromarray(pixels, 'RGB').save('../tmp_photo/coloring_warehouse.png')
+    (Image.fromarray(pixels, 'RGB').
+     save('Mesher/tmp_photo/coloring_warehouse.png'))
 
-    img_tmp = Image.open('../tmp_photo/coloring_warehouse.png')
+    img_tmp = Image.open('Mesher/tmp_photo/coloring_warehouse.png')
     draw = ImageDraw.Draw(img_tmp)
 
     for x_cell in range(offset_x - size, width, size):
@@ -76,9 +76,9 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
             draw.line((0, y_cell, width, y_cell),
                       fill=color_cell, width=width_line)
 
-    img_tmp.save('../mesh_of_warehouse/warehouse_meshed.png')
+    img_tmp.save('Mesher/mesh_of_warehouse/warehouse_meshed.png')
 
-    coloring_cell('../mesh_of_warehouse/warehouse_meshed.png',
+    coloring_cell('Mesher/mesh_of_warehouse/warehouse_meshed.png',
                   operation_zone_x + left, operation_zone_y + top,
                   size, color=(0, 100, 100), width_line=width_line)
 
@@ -87,5 +87,5 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
 
 
 if __name__ == "__main__":
-    mesh_function('../outline_of_warehouse/image.jpeg',
+    mesh_function('Mesher/outline_of_warehouse/image.jpeg',
                   500, 450, 10)
