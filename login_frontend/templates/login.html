@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ЯндексТопология - Вход</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'YS Text', Arial;
+        }
+        
+        body {
+            background-color: #f6f5f6;
+            color: #333;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+        
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            height: 450px;
+        }
+        
+        .login-title {
+            font-size: 29px;
+            margin-bottom: 23px;
+            text-align: center;
+            font-weight: 540;
+            color: black;
+        }
+        
+        .form-group {
+            margin-bottom: 26px;
+            
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 18px;
+            color: #030303;
+            font-size: 23px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: rgb(243, 243, 242);
+            font-size: 16x;
+        }
+        
+        .form-control:focus {
+            border-color: rgb(243, 243, 242);
+            outline: none;
+        }
+        
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 24px 0;
+        }
+        
+        .btn {
+            width: 78%;
+            padding: 12px;
+            background-color: #fc0;
+            border: none;
+            border-radius: 18px;
+            font-size: 20px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #ffdb4d;
+        }
+
+        .btn-container2 {
+            display: flex;  /* Изменено с inline-block на flex */
+            justify-content: center;
+            margin: 16px 0;
+        }
+        
+        .btn2 {
+            width: 78%;
+            padding: 12px;
+            background-color: rgb(193, 193, 193);
+            border: none;
+            border-radius: 13px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            display: block;  /* Добавлено для корректного отображения ссылки */
+        }
+        
+        .btn2:hover {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="/templates/images/Yandex_icon.svg.png" alt="Яндекс" width="60">
+        <h1>
+        <div>Топология</div>
+        </h1>
+    </header>
+    
+    <main class="main">
+        <div class="login-container">
+            <h1 class="login-title">Вход в систему</h1>
+            <form method="post">
+                <div class="form-group">
+                    <label for="username" for="form-label">Логин</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div class="btn-container">
+                    <button type="submit" class="btn">Вход</button>
+                </div>
+            </form>
+            <div class="btn-container2">
+                <a href="http://127.0.0.1:5001/register" class="btn2">Регистрация</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
