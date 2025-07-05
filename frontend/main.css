@@ -1,0 +1,80 @@
+        body {
+            margin: 0;
+            background: #F2F2F2;
+            font-family: Arial, sans-serif;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 16px 32px;
+            border-bottom: 1px solid #ececec;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .yandex-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+        }
+        .header-title {
+            font-size: 28px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        .user-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #F2F2F2;
+            border: 1px solid #4A4A4A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+        }
+        .logout-btn {
+            padding: 6px 18px;
+            border: 1px solid #4A4A4A;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .main-content {
+            margin: 40px 0 0 0;
+            display: flex;
+            justify-content: center;
+        }
+        .recent-projects-block {
+            background: #fff;
+            border-radius: 28px;
+            padding: 24px 40px;
+            min-width: 1200px;
+            display: flex;
+            align-items: center;
+            box-shadow: none;
+        }
+        .recent-title {
+            font-size: 24px;
+            margin-right: 800px;
+        }
+        .new-btn {
+            background: #FDD329;
+            color: #222;
+            border: none;
+            border-radius: 16px;
+            padding: 12px 48px;
+            font-size: 24px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .new-btn:hover {
+            background: #ffe066;
+        }
