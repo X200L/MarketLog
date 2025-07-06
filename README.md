@@ -13,7 +13,8 @@ System takes building plan(like evacuation plan) as input, user can customize th
 
 The system needs the following python libraries to run:
 
-- Flask
-- OpenCV
+- flask
+- opencv-python
 - numpy
-- PIL
+- pillow
+- cryptography
