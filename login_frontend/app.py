@@ -1,30 +1,40 @@
 from flask import Flask, render_template, redirect, url_for, request, session, send_from_directory
-import sqlite3 # подключаем Sqlite в наш проект 
-import hashlib # библиотека для хеширования 
-import random
+import sqlite3
+import hashlib
+from cryptography.fernet import Fernet
+
+conn = sqlite3.connect('database.db')
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS content (
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             idblock TEXT,
+             short_title TEXT,
+             img TEXT,
+             altimg TEXT,
+             title TEXT,
+             contenttext TEXT,
+             author TEXT,
+             timestampdata DATETIME)''')
+c.execute('''CREATE TABLE IF NOT EXISTS users (
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             username TEXT,
+             password TEXT)''')
+conn.close()
 
 app = Flask(__name__)
-TheKey= str(hex(random.randint(int((2**(8*8))/8), (2**(8*8)))))  # подствавьте свой секретный ключ
-app.secret_key = TheKey
+TheKey=Fernet.generate_key()
+app.secret_key = str(TheKey)
 print(TheKey)
 Valid = False
 def create_user(username, password):
-    # Хеширование пароля
     hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
-
-    # Подключение к нашей базе данных
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-
     # Добавление нового пользователя
     c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
-
-    # Сохранение изменений и закрытие соединения с базой данных
     conn.commit()
     conn.close()
 
-# секретный ключ для хеширования данных сессии при авторизации
-# Устанавливаем соединение с Базой Данных
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
