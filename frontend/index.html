@@ -2,44 +2,31 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Topology</title>
+    <title>Топология</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logotip">
-            <img src="{{url_for('static', filename='images/yandex_icon.svg.png') }}" class="logo"> 
-            <span class="title">Топология</span>
+    <div class="header">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='images/yandex_icon.svg.png') }}" alt="Я" class="yandex-logo">
+            <span class="header-title">Топология</span>
         </div>
-        <div class="robot">
-            <!-- <label class="section-label">Размеры робота</label> -->
-            <div class="inputs">
-                <p>Размеры робота</p>
-                <input type="number" placeholder=" " class="size">
-                <span class="mult">x</span>
-                <input type="number" placeholder=" " class="size">
+        <div class="header-right">
+            <div class="user-icon">
+                <svg width="20" height="20" fill="none" stroke="#888" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 20c0-4 8-4 8-4s8 0 8 4"/>
+                </svg>
             </div>
-        </div>
-        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data" class="file-section">
-            <label for="fileInput" class="section-label">Файл</label>
-            <div class="file-input">
-                <input type="file" id="fileInput" name="file" accept="image/*">
-                <button type="button" id="clearFileBtn" style="display:none">x</button>
-                <span id="fileName">Выберите файл</span>
-                <button type="button" id="fileBtn">Обзор</button>
-            </div>
-            <button class="upload-btn" type="submit">Загрузить файл</button>
-        <div id="response"></div>
-        </form>
-    </div>
-
-    <div class="main">
-        <div class="fon">
-            <img src="{{url_for('static', filename='images/folder.png') }}" class="fon_folder">
-            <p class="fon_text">Загрузите изображение</p>
+            <button class="logout-btn">Выйти</button>
         </div>
     </div>
-    
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <div class="main-content">
+        <div class="recent-projects-block">
+            <span class="recent-title">Недавние проекты:</span>
+            <button class="new-btn" onclick="window.location.href='/file'">Новый</button>
+        </div>
+    </div>
 </body>
 </html>

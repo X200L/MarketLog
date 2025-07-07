@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const uploadForm = document.getElementById('uploadForm');
+    let uploadedFileName = null; // Переменная для хранения имени загруженного файла
+    
     if (uploadForm) {
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -17,6 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     responseDiv.className = 'error';
                     responseDiv.textContent = 'Ошибка: ' + result.error;
                 } else {
+                    // Сохраняем имя загруженного файла
+                    const fileInput = document.getElementById('fileInput');
+                    if (fileInput && fileInput.files.length > 0) {
+                        uploadedFileName = fileInput.files[0].name;
+                    }
+                    
                     const sidebar = document.querySelector('.sidebar');
                     if (sidebar) {
                         sidebar.innerHTML = `
@@ -41,11 +49,50 @@ document.addEventListener('DOMContentLoaded', function() {
                             <button class="upload-btn build-btn" style="margin-top:24px;">Построить сетку</button>
                             <button class="upload-btn download-btn" style="background:#f2f2f2; color:#111;">Скачать файл</button>
                         `;
+                        
+                        // Добавляем обработчики для новых кнопок
                         const clearRobotBtn = sidebar.querySelector('#clearRobotBtn');
                         if (clearRobotBtn) {
                             clearRobotBtn.addEventListener('click', function() {
                                 const robotInputs = sidebar.querySelectorAll('.robot .size');
                                 robotInputs.forEach(input => input.value = '');
+                            });
+                        }
+                        const buildBtn = sidebar.querySelector('.build-btn');
+                        if (buildBtn) {
+                            buildBtn.addEventListener('click', async function() {
+                                if (!uploadedFileName) {
+                                    alert('Сначала загрузите изображение');
+                                    return;
+                                }
+                                
+                                buildBtn.disabled = true;
+                                buildBtn.textContent = 'Обработка...';
+                                
+                                try {
+                                    const response = await fetch('/build-grid', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify({
+                                            filename: uploadedFileName
+                                        })
+                                    });
+                                    
+                                    const result = await response.json();
+                                    
+                                    if (result.error) {
+                                        alert('Ошибка: ' + result.error);
+                                    } else {
+                                        showProcessedImage(result.processed_filename);
+                                    }
+                                } catch (error) {
+                                    alert('Ошибка соединения при построении сетки');
+                                } finally {
+                                    buildBtn.disabled = false;
+                                    buildBtn.textContent = 'Построить сетку';
+                                }
                             });
                         }
                     }
@@ -119,6 +166,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class=\"fon\">
                     <img src=\"static/images/folder.png\" class=\"fon_folder\">
                     <p class=\"fon_text\">Загрузите изображение</p>
+                </div>
+            `;
+        }
+    }
+
+    function showProcessedImage(filename) {
+        const mainDiv = document.querySelector('.main');
+        if (mainDiv) {
+            mainDiv.innerHTML = `
+                <div class="image-preview">
+                    <img src="/uploads/${filename}" alt="Processed Image" style="max-width:100%; max-height:100%; display:block; margin:auto;">
                 </div>
             `;
         }
