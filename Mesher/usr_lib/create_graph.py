@@ -3,8 +3,8 @@ from Mesher.usr_lib.graph_to_json import graph_to_json
 from Mesher.usr_lib.bfs import bfs
 
 
-def create_graph(vertex_list, start_cell, output_path='Mesher/graph/graph.json'):
-    # функция построения графа связных ячеет, достежимых из операционной зоны
+def create_graph(vertex_list, start_cell, output_path='../graph/graph.json'):
+    # функция построения графа связных ячеек, достежимых из операционной зоны
 
     """функция принимает на вход список всех вершин, координаты
      операционной зоны и путь выходного файла"""
