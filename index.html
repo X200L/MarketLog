@@ -17,9 +17,17 @@
             <a href="#team">Команда</a>
             <a href="#start">Начать пользоваться</a>
         </nav>
+        <button class="header__burger" id="burgerBtn" aria-label="Открыть меню" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
         <div class="header__user">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12" r="6" fill="#E0E0E0"/><rect x="6" y="22" width="20" height="8" rx="4" fill="#E0E0E0"/></svg>
             <button class="header__login">Войти</button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+            <a href="#about">О проекте</a>
+            <a href="#team">Команда</a>
+            <a href="#start">Начать пользоваться</a>
         </div>
     </header>
     <main>
@@ -49,20 +57,46 @@
             </div>
         </div>
     </section>
-
-    <!-- <section class="team" id="team">
-        <h2>Команда проекта</h2>
-        <div class="team__list">
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
+    <!-- Новая секция Преимущества -->
+    <section class="advantages" id="advantages">
+        <h2>Преимущества</h2>
+        <div class="advantages__list">
+            <div class="advantage">
+                <h4>Оптимизация времени</h4>
+                <p>Работа по проектированию склада занимает в разы меньше времени</p>
+            </div>
+            <div class="advantage">
+                <h4>Кроссплатформенность</h4>
+                <p>Доступ с любого устройства, где бы вы ни были.</p>
+            </div>
+            <div class="advantage">
+                <h4>Подписка Ядекс 180</h4>
+                <p>Для получения темной темы оплатите подписку в 180 рублей(да-да вы нашли пасхалку к предзащите)</p>
+            </div>
         </div>
-    </section> -->
+    </section>
+    <!-- Секция FAQ -->
+    <section class="faq" id="faq">
+        <h2>Часто задаваемые вопросы</h2>
+        <div class="faq__list">
+            <div class="faq__item">
+                <p class="faq__question">Как начать пользоваться сервисом?</з>
+                <p class="faq__answer">Нажмите кнопку "Начать пользоваться" и зарегистрируйтесь.</p>
+            </div>
+            <div class="faq__item">
+                <p class="faq__question">В каком формате должны быть схемы складов?</з>
+                <p class="faq__answer">Схемы должны быть изображениями в формате png, jpg или pdf</p>
+            </div>
+            <div class="faq__item">
+                <p class="faq__question">Можно ли обвести границы склада самостоятельно?</з>
+                <p class="faq__answer">Можно, для этого есть специальный блок на сайте</p>
+            </div>
+            <div class="faq__item">
+                <p class="faq__question">Как выбрать масштаб сетки?</з>
+                <p class="faq__answer">масштаб сетки вводится пользователем в специально отведенной графе</p>
+            </div>
+        </div>
+    </section>
     <section class="start" id="start">
         <h2>Начать пользоваться</h2>
         <div class="start__block">
@@ -84,5 +118,58 @@
         <p class="footer__center">Яндекс Топология 2025</p>
         <p class="footer__right">frogeesoft.team@gmail.com</p>
     </footer>
+    <!-- Модальное окно входа -->
+    <div class="modal" id="loginModal">
+        <div class="modal__content">
+            <span class="modal__close" id="closeModal">×</span>
+            <h2>Вход</h2>
+            <input type="text" placeholder="Email" class="modal__input">
+            <input type="password" placeholder="Пароль" class="modal__input">
+            <button class="btn btn-yellow modal__btn">Войти</button>
+        </div>
+    </div>
+    <script>
+    // Плавный скролл
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+            // Закрытие мобильного меню при переходе
+            if(window.innerWidth <= 600) {
+                document.getElementById('mobileMenu').classList.remove('open');
+                document.getElementById('burgerBtn').setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+    // Анимация появления блоков
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.feature, .advantage, .team__member, .review, .faq__item, .start__block').forEach(el => {
+        observer.observe(el);
+    });
+    // Мобильное меню
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    burgerBtn.addEventListener('click', function() {
+        mobileMenu.classList.toggle('open');
+        const expanded = burgerBtn.getAttribute('aria-expanded') === 'true';
+        burgerBtn.setAttribute('aria-expanded', !expanded);
+        mobileMenu.setAttribute('aria-hidden', expanded);
+    });
+    window.addEventListener('resize', function() {
+        if(window.innerWidth > 600) {
+            mobileMenu.classList.remove('open');
+            burgerBtn.setAttribute('aria-expanded', 'false');
+            mobileMenu.setAttribute('aria-hidden', 'true');
+        }
+    });
+    </script>
 </body>
 </html> 
