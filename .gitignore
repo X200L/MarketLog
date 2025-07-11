@@ -5,9 +5,13 @@
 # python
 .env
 .venv
+venv
+__pycache__
+usr_lib/__pycache__
 
 #macos
 .DS_Store
+
 
 # cv branch
 uploads

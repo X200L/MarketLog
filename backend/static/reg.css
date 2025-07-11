@@ -1,0 +1,94 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'YS Text', Arial;
+        }
+        body {
+            background-color: #F2F2F2;
+            color: #333;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            height: 500px;
+        }
+        .login-title {
+            font-size: 29px;
+            margin-bottom: 23px;
+            text-align: center;
+            font-weight: 500;
+            color: black;
+        }
+        .form-group {
+            margin-bottom: 26px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            font-size: 18px;
+            color: #030303;
+            font-size: 23px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: rgb(243, 243, 242);
+            font-size: 16x;
+        }
+        .form-control:focus {
+            border-color: rgb(243, 243, 242);
+            outline: none;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin: 24px 0;
+        }
+        .btn {
+            width: 78%;
+            padding: 12px;
+            background-color: #FDD329;
+            border: none;
+            border-radius: 18px;
+            font-size: 20px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #ffdb4d;
+        }
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .forgot-password a {
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }

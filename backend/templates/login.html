@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ЯТопология - Вход</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+    <header class="header">
+        <img src="/static/images/Yandex_icon.svg.png" alt="Яндекс" width="60">
+        <h1>
+        <div>Топология</div>
+        </h1>
+    </header>
+    <main class="main">
+        <div class="login-container">
+            <h1 class="login-title">Вход в систему</h1>
+            <form method="post">
+                <div class="form-group">
+                    <label for="username" for="form-label">Логин</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div class="btn-container">
+                    <button type="submit" class="btn">Вход</button>
+                </div>
+            </form>
+            <div class="btn-container2">
+                <a href="{{ url_for('register') }}" class="btn2">Регистрация</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 
