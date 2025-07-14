@@ -1,7 +1,7 @@
 from collections import deque
 
 
-def bfs(graph, start):
+def search_bfs(graph, start):
     """функция выполняет обход графа из указаной вершины и
     возвращает вершины, достежимые из неё"""
 
@@ -32,4 +32,4 @@ if __name__ == "__main__":
         'Z': []
     }
 
-    print(bfs(data_test, 'A'))
+    print(search_bfs(data_test, 'A'))
