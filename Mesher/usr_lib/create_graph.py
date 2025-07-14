@@ -1,10 +1,9 @@
 from collections import defaultdict
-from Mesher.usr_lib.graph_to_json import graph_to_json
-from Mesher.usr_lib.bfs import bfs
+from Mesher.usr_lib.search_bfs import search_bfs
 
 
-def create_graph(vertex_list, start_cell, output_path='Mesher/graph/graph.json'):
-    # функция построения графа связных ячеет, достежимых из операционной зоны
+def create_graph(vertex_list, start_cell, output_path='../graph/graph.json'):
+    # функция построения графа связных ячеек, достежимых из операционной зоны
 
     """функция принимает на вход список всех вершин, координаты
      операционной зоны и путь выходного файла"""
@@ -18,12 +17,11 @@ def create_graph(vertex_list, start_cell, output_path='Mesher/graph/graph.json')
                         abs(i[0] - j[0]) + abs(i[1] - j[1]) == 1):
                     graph[i].append(j)
 
-    true_vertex = bfs(graph, start_cell)
+    true_vertex = search_bfs(graph, start_cell)
     result_graph = defaultdict(list)
     for i in true_vertex:
         result_graph[i] = graph[i]
 
-    graph_to_json(result_graph, output_path=output_path)
 
     return result_graph
 
