@@ -25,7 +25,7 @@ def dijkstra (graph, start, target):
                 queue.append(graph[bfs[0]][i])
                 bfs.append(graph[bfs[0]][i])
         bfs.pop(0)
-    print(queue)
+    #print(queue)
     for i in range(0, len(queue)):
         for j in range(0,len(graph[queue[i]])):
             distance = distances[queue[i]] +1
@@ -38,9 +38,9 @@ def dijkstra (graph, start, target):
                 for c in range(0,len(parents[queue[i]])):
                     parents[graph[queue[i]][j]].append(parents[queue[i]][c])
                 
-    print(sortdict(distances))
+    #print(sortdict(distances))
     #print(parents)
-    return distances[target], parents[target]
+    return parents[target]
 """with open(Path("../visualization/main/graph/data.json"), "r", encoding="utf-8") as file:
     data = json.load(file)
 print(dijkstra(data['graph'], input('start: '), '0:0'))"""

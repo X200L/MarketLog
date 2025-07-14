@@ -1,4 +1,6 @@
 from pathlib import Path
+import usr_lib.objects as obj
+shelves = []
 def readtxtmap():
     pathmap = []
     with open(Path("../visualization/main/usr_lib/map.txt"), "r", encoding="utf-8") as file:
@@ -9,5 +11,8 @@ def readtxtmap():
         a = ''
         for j in range(0,len(pathmap[i])):
             a = a + ' '+pathmap[i][j]
+            if pathmap[i][j] == '2':
+                shelves.append(obj.shelf(i,j))
         print(a)
+    #print(shelves)
     return pathmap

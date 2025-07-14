@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
-import dijkstra
-import test
+import usr_lib.dijkstra as dijkstra
+import usr_lib.readmaptxt
 #Инициализация
 def drawagentmap(target, agentsloc, pathmap, start):
     #pathmap - 2х-мерный массив с картой из двух типов знаков (стена - 1, стеной считаются все клетки, через которые не может проехать робот со стеллажом, и дорога - 0)
@@ -11,9 +11,9 @@ def drawagentmap(target, agentsloc, pathmap, start):
     graph = {}
     if agentsloc:
         for i in range(0, len(agentsloc)):
-            pathmap[agentsloc[i][0]][agentsloc[i][1]] = 1
-    pathmap[target[0]][target[1]] = 0
-    print(len(pathmap[10]))
+            pathmap[agentsloc[i][0]][agentsloc[i][1]] = '1'
+    pathmap[target[0]][target[1]] = '0'
+    #print(len(pathmap[10]))
     for i in range(0, len(pathmap)):
         #print(i)
         for j in range(0, len(pathmap[i])):
@@ -35,9 +35,5 @@ def drawagentmap(target, agentsloc, pathmap, start):
                 if pathmap[i][j-1] == '0':
                     graph[(str(i)+':'+str(j))].append((str(i)+':'+str(j-1)))
                     #print('connection left')
-    print(graph)
-    print(dijkstra.dijkstra(graph,'5:8','17:28'))
-t = [17,29]
-a = []
-l = [5,8]
-drawagentmap(t,a,test.readtxtmap(),l)
+    #print(graph)
+    return dijkstra.dijkstra(graph,str(start[0])+':'+str(start[1]),str(target[0])+':'+str(target[1]))
