@@ -201,7 +201,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       color=(155, 25, 155))
 
         matrix_to_json(matrix, f'../graph/graph{way}.json')
-        pal, mid_len = score_function(matrix, operation_zone)
+        pal, mid_len = score_function(matrix, operation_zone, f'../heatmaps/heatmap{way}.png')
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
 
     for way in range(3, 6):
@@ -377,5 +377,5 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       color=(155, 25, 155))
 
         matrix_to_json(matrix, f'../graph/graph{way}.json')
-        pal, mid_len = score_function(matrix, operation_zone)
+        pal, mid_len = score_function(matrix, operation_zone, f'../heatmaps/heatmap{way}.png')
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
