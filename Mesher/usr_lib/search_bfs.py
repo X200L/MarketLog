@@ -1,9 +1,14 @@
 from collections import deque
 
 
-def search_bfs(graph, start):
+def search_bfs(graph, start, flag=False):
     """функция выполняет обход графа из указаной вершины и
     возвращает вершины, достежимые из неё"""
+
+    dst = {}
+    for i in graph:
+        dst[i] = float('inf')
+    dst[start] = 0
 
     dq = deque([start])
     visited = list()
@@ -15,6 +20,10 @@ def search_bfs(graph, start):
             if i not in visited:
                 visited.append(i)
                 dq.append(i)
+                dst[i] = dst[v] + 1
+
+    if flag:
+        return dst
 
     return visited
 
