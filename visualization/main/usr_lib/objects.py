@@ -21,6 +21,7 @@ class robot:
             curmap[self.cords[0]][self.cords[1]] = self.below
             self.below = curmap[self.trycords[0]][self.trycords[1]]
             curmap[self.trycords[0]][self.trycords[1]] = 'R'
+            self.path.pop()
         return curmap
 
 
@@ -29,4 +30,7 @@ class shelf:
     def __init__(self, x, y):
         self.cords = [x,y]
         #print('shelf created at:'+str(self.x)+' '+str(self.y))
-    pass
+    
+class opzone:
+    def __init__(self, x, y):
+        self.cords = [x,y]
