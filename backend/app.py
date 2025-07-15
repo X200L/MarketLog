@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect, url_for
 import os
-from test import ImageProcessor
+from yanlog import thicken_and_color_image, ImageProcessor
 import sqlite3
 import hashlib
 
@@ -9,7 +9,7 @@ app.secret_key = 'your_super_secret_key_1234567890'  # Установите ун
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-image_processor = ImageProcessor(app.config['UPLOAD_FOLDER'])
+# Удалить определение класса ImageProcessor здесь, использовать импортированный класс
 
 # Инициализация базы данных при запуске
 if not os.path.exists('database.db'):
@@ -61,6 +61,8 @@ def build_grid():
         
         filename = data['filename']
         
+        # Используем ImageProcessor из cv.yanlog
+        image_processor = ImageProcessor(app.config['UPLOAD_FOLDER'])
         processed_filename = image_processor.process_file(filename)
         
         return jsonify({
