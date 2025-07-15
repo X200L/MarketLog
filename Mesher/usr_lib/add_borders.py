@@ -21,4 +21,4 @@ def add_borders(intput, output, left, right, top, bottom, size, color='red'):
 if __name__ == "__main__":
     add_borders('../outline_of_warehouse/img2.png',
                 '../outline_of_warehouse/img2.png',
-                100, 100, 100, 100, color='green')
+                100, 100, 100, 100, 50, color='green')
