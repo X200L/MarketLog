@@ -2,7 +2,7 @@ from collections import defaultdict
 from Mesher.usr_lib.search_bfs import search_bfs
 
 
-def create_graph(vertex_list, start_cell, output_path='../graph/graph.json'):
+def create_graph(vertex_list, start_cell):
     # функция построения графа связных ячеек, достежимых из операционной зоны
 
     """функция принимает на вход список всех вершин, координаты
@@ -21,7 +21,6 @@ def create_graph(vertex_list, start_cell, output_path='../graph/graph.json'):
     result_graph = defaultdict(list)
     for i in true_vertex:
         result_graph[i] = graph[i]
-
 
     return result_graph
 
