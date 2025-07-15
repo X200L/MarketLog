@@ -1,7 +1,7 @@
 from collections import deque
 
 
-def route_bfs(input_graph, start, finish):
+def route_builder(input_graph, start, finish):
     visited = {start: None}
 
     dq = deque([start])
@@ -42,4 +42,4 @@ if __name__ == "__main__":
         'F': ['C', 'E']
     }
 
-    print(route_bfs(graph, 'A', ['F', 'E', 'C']))
+    print(route_builder(graph, 'A', ['F', 'E', 'C']))

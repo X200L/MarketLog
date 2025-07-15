@@ -6,14 +6,14 @@ def search_bfs(graph, start):
     возвращает вершины, достежимые из неё"""
 
     dq = deque([start])
-    visited = set()
-    visited.add(start)
+    visited = list()
+    visited.append(start)
 
     while dq:
         v = dq.popleft()
         for i in graph[v]:
             if i not in visited:
-                visited.add(i)
+                visited.append(i)
                 dq.append(i)
 
     return visited
