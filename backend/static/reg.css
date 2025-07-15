@@ -81,6 +81,24 @@
         .btn:hover {
             background-color: #ffdb4d;
         }
+        .btn2 {
+            width: 78%;
+            padding: 12px;
+            background-color: #F2F2F2;
+            border: none;
+            border-radius: 13px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: black;
+            display: block;
+        }
+        .btn2:hover {
+            background-color: #ffffff;
+        }
         .forgot-password {
             text-align: center;
             margin-top: 20px;
