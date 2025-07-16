@@ -198,12 +198,55 @@ document.addEventListener('DOMContentLoaded', function() {
         const mainDiv = document.querySelector('.main');
         if (mainDiv) {
             let html = '<div class="image-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
-            images.forEach(img => {
-                html += `<div class="image-grid-item"><img src="${img}" alt="${img}" style="width:100%;border-radius:8px;box-shadow:0 2px 8px #0001;"></div>`;
+            images.forEach((img, idx) => {
+                html += `<div class="image-grid-item"><img src="${img}" alt="${img}" data-idx="${idx}" style="width:100%;border-radius:8px;box-shadow:0 2px 8px #0001; cursor:pointer;"></div>`;
             });
             html += '</div>';
             mainDiv.innerHTML = html;
+
+            // Добавляем обработчик клика по изображениям
+            const gridImages = mainDiv.querySelectorAll('.image-grid-item img');
+            gridImages.forEach(imgEl => {
+                imgEl.addEventListener('click', function() {
+                    const idx = imgEl.getAttribute('data-idx');
+                    openImageModal(images[idx], idx);
+                });
+            });
         }
+    }
+
+    // Модальное окно
+    function openImageModal(imgSrc, idx) {
+        const modal = document.getElementById('imageModal');
+        const mainImg = document.getElementById('modalMainImg');
+        const heatmapImg = document.getElementById('modalHeatmapImg');
+        if (modal && mainImg && heatmapImg) {
+            mainImg.src = imgSrc;
+            heatmapImg.src = `/heatmaps/heatmap${idx}.png`;
+            modal.style.display = 'flex';
+        }
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Навешиваем обработчик на крестик закрытия модального окна
+    const closeModalBtn = document.getElementById('closeModal');
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeImageModal);
+    }
+    // Закрытие по клику вне контента
+    const imageModal = document.getElementById('imageModal');
+    if (imageModal) {
+        imageModal.addEventListener('click', function(e) {
+            if (e.target === imageModal) {
+                closeImageModal();
+            }
+        });
     }
 
     resetImagePreview();

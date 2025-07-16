@@ -95,6 +95,11 @@ def temp_uploaded_file(filename):
     abs_path = os.path.join(project_root, 'temp_uploads')
     return send_from_directory(abs_path, filename)
 
+@app.route('/heatmaps/<filename>')
+def heatmap_file(filename):
+    abs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'heatmaps'))
+    return send_from_directory(abs_path, filename)
+
 
 def create_user(username, password):
     hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
