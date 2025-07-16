@@ -18,4 +18,4 @@ def starter(input_data, operation_zone_x, operation_zone_y, robot_size,
 
 if __name__ == "__main__":
     starter('../outline_of_warehouse/img4.png',
-            350, 150, 30)
+            350, 200, 30)
