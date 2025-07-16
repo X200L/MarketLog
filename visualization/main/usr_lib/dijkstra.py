@@ -4,7 +4,8 @@
 def sortdict(unsorted):
     sorted_dict = {k: v for k, v in sorted(unsorted.items(), key=lambda item: item[1])}
     return sorted_dict
-def dijkstra (graph, start, target):
+def dijkstra (graphIn, start, target, agentspaths, f):
+    graph = graphIn
     queue = []
     distances = {}
     parents = {}
@@ -27,6 +28,11 @@ def dijkstra (graph, start, target):
         bfs.pop(0)
     #print(queue)
     for i in range(0, len(queue)):
+        if agentspaths:
+            for d in range(0,len(agentspaths)):
+                if d!=f and len(agentspaths[d])>i:
+                    graph[agentspaths[d][i]] = []
+                    #print('test')
         for j in range(0,len(graph[queue[i]])):
             distance = distances[queue[i]] +1
             #print(i)
@@ -37,7 +43,7 @@ def dijkstra (graph, start, target):
                 #print(parents)
                 for c in range(0,len(parents[queue[i]])):
                     parents[graph[queue[i]][j]].append(parents[queue[i]][c])
-                
+        graph = graphIn
     #print(sortdict(distances))
     #print(parents)
     return parents[target]
