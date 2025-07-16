@@ -45,15 +45,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="inputs">
                                     <p>Размеры стелажа</p>
                                     <input type="number" placeholder=" " class="size">
-                                    <p type="mult" style="margin: 0 4px 0 4px;">×</p>
-                                    <input type="number" placeholder=" " class="size">
                                 </div>
                             </div>
                             <div class="zones file-section">
-                                <div class="inputs">
-                                    <p>Зарядные станции</p>
-                                    <input type="number" placeholder=" " class="size">
-                                </div>
                             </div>
                             <button class="upload-btn build-btn" style="margin-top:24px;">Построить сетку</button>
                             <button class="upload-btn download-btn" style="background:#f2f2f2; color:#111;">Скачать файл</button>
@@ -74,10 +68,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                     alert('Сначала загрузите изображение');
                                     return;
                                 }
-                                
+                                // Получаем значения из input'ов
+                                const inputs = sidebar.querySelectorAll('.size');
+                                const operation_zone_x = inputs[0] ? parseInt(inputs[0].value) : 350;
+                                const operation_zone_y = inputs[1] ? parseInt(inputs[1].value) : 150;
+                                const robot_size = inputs[2] ? parseInt(inputs[2].value) : 30;
+
                                 buildBtn.disabled = true;
                                 buildBtn.textContent = 'Обработка...';
-                                
                                 try {
                                     const response = await fetch('/build-grid', {
                                         method: 'POST',
@@ -85,16 +83,21 @@ document.addEventListener('DOMContentLoaded', function() {
                                             'Content-Type': 'application/json',
                                         },
                                         body: JSON.stringify({
-                                            filename: uploadedFileName
+                                            filename: uploadedFileName,
+                                            operation_zone_x: operation_zone_x,
+                                            operation_zone_y: operation_zone_y,
+                                            robot_size: robot_size
                                         })
                                     });
-                                    
                                     const result = await response.json();
-                                    
                                     if (result.error) {
                                         alert('Ошибка: ' + result.error);
                                     } else {
-                                        showProcessedImage(result.processed_filename);
+                                        if (result.images && Array.isArray(result.images)) {
+                                            showImageGrid(result.images);
+                                        } else if (result.processed_filename) {
+                                            showProcessedImage(result.processed_filename);
+                                        }
                                     }
                                 } catch (error) {
                                     alert('Ошибка соединения при построении сетки');
@@ -188,6 +191,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="/uploads/${filename}" alt="Processed Image" style="max-width:100%; max-height:100%; display:block; margin:auto;">
                 </div>
             `;
+        }
+    }
+
+    function showImageGrid(images) {
+        const mainDiv = document.querySelector('.main');
+        if (mainDiv) {
+            let html = '<div class="image-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
+            images.forEach(img => {
+                html += `<div class="image-grid-item"><img src="${img}" alt="${img}" style="width:100%;border-radius:8px;box-shadow:0 2px 8px #0001;"></div>`;
+            });
+            html += '</div>';
+            mainDiv.innerHTML = html;
         }
     }
 
