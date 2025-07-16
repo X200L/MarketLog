@@ -6,7 +6,7 @@ import hashlib
 from main2 import starter
 
 app = Flask(__name__)
-app.secret_key = 'your_super_secret_key_1234567890'  # Установите уникальный секретный ключ
+app.secret_key = 'your_super_secret_key_1234567890'  
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['TEMP_UPLOAD_FOLDER'] = 'temp_uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
