@@ -49,7 +49,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: (c[0] * size, c[1] * size), roads), size,
-                      width_line=width_line, color=(120, 120, 120))
+                      width_line=width_line, color=(100, 100, 100))
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: (c[0] * size, c[1] * size), pallets), size,
@@ -118,7 +118,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: ((c[0] - 1) * size, (c[1] - 1) * size),
                           new_road), size, width_line=width_line,
-                      color=(120, 120, 120))
+                      color=(100, 100, 100))
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       [(operation_zone[0] * size - size,
@@ -198,10 +198,30 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       map(lambda c: ((c[0]) * size, (c[1]) * size),
                           chk), size,
                       width_line=width_line,
-                      color=(155, 25, 155))
+                      color=(0, 255, 0))
+
+        walls = set()
+        empty = set()
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    empty.add((i, j))
+
+                if matrix[i][j] in {-3, -2}:
+                    walls.add((i, j))
+
+        coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          empty), size, width_line=width_line,
+                      color=(255, 255, 255))
+
+        coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          walls), size, width_line=width_line,
+                      color=(255, 0, 0))
 
         matrix_to_json(matrix, f'../graph/graph{way}.json')
-        pal, mid_len = score_function(matrix)
+        pal, mid_len = score_function(matrix, operation_zone, f'../heatmaps/heatmap{way}.png')
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
 
     for way in range(3, 6):
@@ -226,7 +246,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: (c[0] * size, c[1] * size), roads), size,
-                      width_line=width_line, color=(120, 120, 120))
+                      width_line=width_line, color=(100, 100, 100))
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: (c[0] * size, c[1] * size), pallets), size,
@@ -295,7 +315,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: ((c[0] - 1) * size, (c[1] - 1) * size),
                           new_road), size, width_line=width_line,
-                      color=(120, 120, 120))
+                      color=(100, 100, 100))
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       [(operation_zone[0] * size - size,
@@ -340,7 +360,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                           map(lambda c: ((c[1]) * size, (c[0]) * size),
                               turn_zone), size,
                           width_line=width_line,
-                          color=(0, 255, 255))
+                          color=(0, 255, 220))
         else:
             print(f"{way} - Нет места для зоны поворота")
 
@@ -374,8 +394,31 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       map(lambda c: ((c[0]) * size, (c[1]) * size),
                           chk), size,
                       width_line=width_line,
-                      color=(155, 25, 155))
+                      color=(0, 255, 0))
+
+        walls = set()
+        empty = set()
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    empty.add((i, j))
+
+                if matrix[i][j] in {-3, -2}:
+                    walls.add((i, j))
+
+        coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          empty), size, width_line=width_line,
+                      color=(255, 255, 255))
+
+        coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          walls), size, width_line=width_line,
+                      color=(255, 0, 0))
+
+
 
         matrix_to_json(matrix, f'../graph/graph{way}.json')
-        pal, mid_len = score_function(matrix)
+        pal, mid_len = score_function(matrix, operation_zone, f'../heatmaps/heatmap{way}.png')
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
+
