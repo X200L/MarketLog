@@ -9,14 +9,18 @@ from search_bfs import search_bfs
 
 
 def mesh_function(image_path, operation_zone_x, operation_zone_y,
-                  size=10, color_cell="black", width_line=1, epsilon=0.00, temp_upload_folder=None):
+                  size=10, color_cell="black", width_line=1, epsilon=0.00, temp_upload_folder=None, user_dir=None):
     # функция для разбиения схемы склада рабочие области
 
     """функция возвращает изменённую фотографию и
     список абсолютных координат рабочих областей"""
 
-    if temp_upload_folder is None:
+    if user_dir is not None:
+        temp_upload_folder = os.path.join(user_dir, 'temp_uploads')
+    elif temp_upload_folder is None:
         temp_upload_folder = '../tmp_photo'
+    os.makedirs(temp_upload_folder, exist_ok=True)
+
     image = Image.open(image_path)
 
     offset_x = operation_zone_x % size
