@@ -66,7 +66,7 @@ def build_grid():
         operation_zone_y = int(data.get('operation_zone_y', 150))
         robot_size = int(data.get('robot_size', 30))
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
- 
+
         processor = ImageProcessor(app.config['UPLOAD_FOLDER'])
         processed_filename = processor.process_file(filename)
         processed_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_filename)

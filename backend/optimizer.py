@@ -3,12 +3,12 @@ import numpy as np
 import os
 
 from itertools import chain
-from coloring_cell import coloring_cell
-from route_builder import route_builder
-from search_bfs import search_bfs
-from create_graph import create_graph
-from matrix_to_json import matrix_to_json
-from score_function import score_function
+from backend.coloring_cell import coloring_cell
+from backend.route_builder import route_builder
+from backend.search_bfs import search_bfs
+from backend.create_graph import create_graph
+from backend.matrix_to_json import matrix_to_json
+from backend.score_function import score_function
 
 
 def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
@@ -16,6 +16,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
     size, width_line = graphic_data
     if temp_upload_folder is None:
         temp_upload_folder = '../tmp_photo'
+
 
     vertex = []
     operation_zone = (0, 0)
@@ -26,6 +27,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
 
             if matrix[i][j] not in {-3, -2}:
                 vertex.append((j + 1, i + 1))
+
 
     graph = create_graph(vertex, operation_zone)
     matrix_const = copy.deepcopy(matrix)
@@ -94,6 +96,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                     if matrix[i - 1][j] == 0 and matrix[i][j] in {4, -1}:
                         matrix[i - 1][j] = 1
 
+
         roads_list = list(filter(lambda c: c != [], roads_list))
         for i in range(len(roads_list)):
             for j in range(len(roads_list[i])):
@@ -131,6 +134,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
 
         new_pallets = set()
 
+
         for i in range(len(matrix)):
             for j in range(len(matrix[i])):
                 if matrix[i][j] == 0:
@@ -160,6 +164,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                 for j in turn_zone:
                     matrix[j[0]][j[1]] = 2
                 break
+      
 
         if mc1 is not None:
             coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
@@ -178,6 +183,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                     vertex2.append((j + 1, i + 1))
 
         graph2 = create_graph(vertex2, operation_zone)
+        print(187)
 
         ch_now = 0
         chk = []
@@ -228,6 +234,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                         in {0, -1}):
                     pallets.append(np.array([j - 1, i]))
                     s += 1
+        print(236)
 
         coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
                       map(lambda c: (c[0] * size, c[1] * size), roads), size,
@@ -285,12 +292,14 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
             start2 = roads_list[1][-1]
             finish = roads_list[0]
 
+
             for i in chain(route_builder(graph, start1, finish),
                            route_builder(graph, start2, finish)):
                 new_road.add(i)
                 matrix[i[1] - 1][i[0] - 1] = 4
 
             roads_list[0].extend(roads_list.pop(1))
+            print(301)
 
         for i in route_builder(graph, operation_zone,
                                roads_list[0]):
@@ -307,6 +316,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                         operation_zone[1] * size - size)],
                       size, color=(0, 100, 100),
                       width_line=width_line)
+        print(318)
 
         new_pallets = set()
 
@@ -319,6 +329,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                             or matrix[i][j + 1] in {4, -1}):
                         new_pallets.add((j + 1, i + 1))
                         matrix[i][j] = 1
+        print(331)
 
         coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
                       map(lambda c: ((c[0] - 1) * size, (c[1] - 1) * size),
@@ -339,6 +350,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                 for j in turn_zone:
                     matrix[j[0]][j[1]] = 2
                 break
+        print(352)
 
         if mc1 is not None:
             coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
@@ -348,6 +360,7 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                           color=(0, 255, 255))
         else:
             print(f"{way} - Нет места для зоны поворота")
+        print(362)
 
         vertex2 = []
         for i in range(len(matrix)):
@@ -374,12 +387,14 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                 ch_now += 1
                 chk.append((tmp[0] - 1, tmp[1] - 1))
                 matrix[tmp[1] - 1][tmp[0] - 1] = 3
+        print(389)
 
         coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
                       map(lambda c: ((c[0]) * size, (c[1]) * size),
                           chk), size,
                       width_line=width_line,
                       color=(155, 25, 155))
+        print(396)
 
         graph_dir = os.path.join(os.path.dirname(__file__), 'graph')
         os.makedirs(graph_dir, exist_ok=True)

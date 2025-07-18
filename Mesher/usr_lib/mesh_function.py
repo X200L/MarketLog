@@ -10,7 +10,6 @@ from Mesher.usr_lib.search_bfs import search_bfs
 def mesh_function(image_path, operation_zone_x, operation_zone_y,
                   size=10, color_cell="black", width_line=1, epsilon=0.00):
     # функция для разбиения схемы склада рабочие области
-
     """функция возвращает изменённую фотографию и
     список абсолютных координат рабочих областей"""
 

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from search_bfs import search_bfs
+from backend.search_bfs import search_bfs
 
 
 def create_graph(vertex_list, start_cell):

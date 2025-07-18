@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from search_bfs import search_bfs
+from backend.search_bfs import search_bfs
 
 
 def score_function(matrix, operation_zone, path=None):

@@ -27,13 +27,13 @@ class ImageProcessor:
     def __init__(self, upload_folder):
         self.upload_folder = upload_folder
 
-    def process_file(self, filename):
-        filepath = os.path.join(self.upload_folder, filename)
+    def process_file(self, path, filename):
+        filepath = os.path.join(self.upload_folder, path+'/'+filename)
         img = cv2.imread(filepath)
         if img is None:
             raise FileNotFoundError(f"File not found: {filepath}")
         result = thicken_and_color_image(img, max_distance=3, thickness=2)
-        processed_filename = f"processed_{filename}"
+        processed_filename = f"{path}/processed_{filename}"
         processed_path = os.path.join(self.upload_folder, processed_filename)
         cv2.imwrite(processed_path, result)
         return processed_filename
