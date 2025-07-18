@@ -203,7 +203,9 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       width_line=width_line,
                       color=(155, 25, 155))
 
-        matrix_to_json(matrix, f'../graph/graph{way}.json')
+        graph_dir = os.path.join(os.path.dirname(__file__), 'graph')
+        os.makedirs(graph_dir, exist_ok=True)
+        matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
         pal, mid_len = score_function(matrix, operation_zone, os.path.join('backend', 'heatmaps', f'heatmap{way}.png'))
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
 
@@ -379,6 +381,8 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       width_line=width_line,
                       color=(155, 25, 155))
 
-        matrix_to_json(matrix, f'../graph/graph{way}.json')
+        graph_dir = os.path.join(os.path.dirname(__file__), 'graph')
+        os.makedirs(graph_dir, exist_ok=True)
+        matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
         pal, mid_len = score_function(matrix, operation_zone, os.path.join('backend', 'heatmaps', f'heatmap{way}.png'))
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
