@@ -16,7 +16,6 @@ def readtxtmap():
                 shelves.append(obj.shelf(i,j))
             if pathmap[i][j] == '%':
                 start = [i, j]
-                pathmap[i][j]='0'
         print(a)
     #print(shelves)
     return pathmap, start
