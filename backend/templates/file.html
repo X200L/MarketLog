@@ -32,5 +32,12 @@
     </div>
     
     <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <div id="imageModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:12px; padding:24px; display:flex; gap:24px; max-width:90vw; max-height:90vh; align-items:center; position:relative;">
+            <span id="closeModal" style="position:absolute; top:12px; right:20px; font-size:2rem; cursor:pointer;">&times;</span>
+            <img id="modalMainImg" src="" alt="" style="max-width:40vw; max-height:80vh; border-radius:8px; box-shadow:0 2px 8px #0001;">
+            <img id="modalHeatmapImg" src="" alt="Heatmap" style="max-width:40vw; max-height:80vh; border-radius:8px; box-shadow:0 2px 8px #0001;">
+        </div>
+    </div>
 </body>
 </html>
