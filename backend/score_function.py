@@ -1,10 +1,12 @@
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from matplotlib.patches import Rectangle
 from search_bfs import search_bfs
+
+import matplotlib
+matplotlib.use('Agg')
 
 
 def score_function(matrix, operation_zone, path=None):
@@ -28,10 +30,6 @@ def score_function(matrix, operation_zone, path=None):
     dst = search_bfs(road_graph, (operation_zone[1] - 1,
                                   operation_zone[0] - 1), flag=True)
 
-    for i in dst:
-        x, y = i
-        score_matrix[x - 1][y - 1] = dst[i]
-
     all_len = 0
 
     for i in range(len(matrix)):
@@ -39,20 +37,62 @@ def score_function(matrix, operation_zone, path=None):
             if matrix[i][j] == 1:
                 counter += 1
                 tmp = []
+                v = []
                 for c in nb:
                     dy, dx = c
                     if matrix[i + dy][j + dx] in {-1, 0, 2, 4}:
-                        tmp.append(dst[(i + dy, j + dx)])
+                        tmp.append(dst[(i + dy, j + dx)] + 1)
+                        v.append((i, j))
 
                 all_len += min(tmp)
+                score_matrix[v[tmp.index(min(tmp)) - 1][0]][v[tmp.index(min(tmp)) - 1][1]] = min(tmp)
 
     if path is not None:
-        plt.figure(figsize=(10, 8))
-        sns.heatmap(score_matrix, cmap="Blues", vmin=0,
-                    vmax=max(filter(lambda t: t != float('inf'), dst.values())))
+        fig, ax = plt.subplots()
+        try:
+            plt.title(f"Heatmap топологии склада", fontsize=14)
+            ax = sns.heatmap(score_matrix, cmap="autumn_r", square=True,
+                             xticklabels=False, yticklabels=False, vmin=0,
+                             vmax=max(filter(lambda t: t != float('inf'),
+                                             dst.values())) * 1.5)
 
-        plt.savefig(path, dpi=300)
+            for i in range(len(matrix)):
+                for j in range(len(matrix[i])):
+                    if matrix[i][j] == -1:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(0 / 255, 100 / 255,
+                                                          100 / 255)))
 
+                    if matrix[i][j] in {-3, -2}:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(200 / 255, 200 / 255,
+                                                          200 / 255)))
 
+                    if matrix[i][j] == 4:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(100 / 255, 100 / 255,
+                                                          100 / 255)))
 
-    return counter, all_len / counter
+                    if matrix[i][j] == 3:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(0 / 255, 255 / 255,
+                                                          0 / 255)))
+
+                    if matrix[i][j] == 2:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(0 / 255, 255 / 255,
+                                                          255 / 255)))
+
+                    if matrix[i][j] == 0:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(255 / 255, 255 / 255,
+                                                          255 / 255)))
+
+            # suptitle с нужной информацией
+            plt.suptitle(f"{counter} - стеллажей; {round(all_len / counter, 3)} - среднее растояние до стеллажа", y=0.07, fontsize=8)
+            return counter, all_len / counter
+        except ZeroDivisionError:
+            return 0, float('inf')
+        finally:
+            fig.savefig(path, dpi=300, bbox_inches='tight')
+            plt.close(fig)

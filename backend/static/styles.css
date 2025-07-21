@@ -96,10 +96,16 @@ body {
     cursor: pointer;
     margin-top: 24px;
     transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
 }
 
 .upload-btn:hover {
     background: #ffe666;
+    text-decoration: none;
 }
 
 .main {
