@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const uploadForm = document.getElementById('uploadForm');
     let uploadedFileName = null; // Переменная для хранения имени загруженного файла
+    let currentMarker = null; // Переменная для хранения текущего маркера
     
     if (uploadForm) {
         uploadForm.addEventListener('submit', async (e) => {
@@ -68,6 +69,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                     alert('Сначала загрузите изображение');
                                     return;
                                 }
+                                
+                                // Удаляем маркер при построении сетки
+                                removeMarker();
+                                
                                 // Получаем значения из input'ов
                                 const inputs = sidebar.querySelectorAll('.size');
                                 const operation_zone_x = inputs[0] ? parseInt(inputs[0].value) : 350;
@@ -93,8 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     if (result.error) {
                                         alert('Ошибка: ' + result.error);
                                     } else {
-                                        if (result.images && Array.isArray(result.images)) {
-                                            showImageGrid(result.images);
+                                        if (result.images && result.heatmaps && Array.isArray(result.images) && Array.isArray(result.heatmaps)) {
+                                            showImageGrid(result.images, result.heatmaps);
                                         } else if (result.processed_filename) {
                                             showProcessedImage(result.processed_filename);
                                         }
@@ -162,25 +167,77 @@ document.addEventListener('DOMContentLoaded', function() {
             const mainDiv = document.querySelector('.main');
             if (mainDiv) {
                 mainDiv.innerHTML = `
-                    <div class=\"image-preview\">
-                        <img src=\"${e.target.result}\" alt=\"Preview\" style=\"max-width:100%; max-height:100%; display:block; margin:auto;\">
+                    <div class="image-preview clickable">
+                        <img src="${e.target.result}" alt="Preview" style="max-width:100%; max-height:100%; display:block; margin:auto;">
                     </div>
                 `;
+                
+                // Добавляем обработчик клика для размещения маркера
+                const imagePreview = mainDiv.querySelector('.image-preview');
+                if (imagePreview) {
+                    imagePreview.addEventListener('click', handleImageClick);
+                }
             }
         };
         reader.readAsDataURL(file);
+    }
+
+    function handleImageClick(e) {
+        const imagePreview = e.currentTarget;
+        const img = imagePreview.querySelector('img');
+        if (!img) return;
+
+        const rect = img.getBoundingClientRect();
+        // Координаты клика относительно отображаемого изображения
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Пересчёт в координаты оригинального изображения
+        const scaleX = img.naturalWidth / img.width;
+        const scaleY = img.naturalHeight / img.height;
+        const realX = x * scaleX;
+        const realY = y * scaleY;
+
+        // Удаляем предыдущий маркер, если он есть
+        removeMarker();
+
+        // Создаем новый маркер (ставим по месту клика на экране)
+        currentMarker = document.createElement('div');
+        currentMarker.className = 'marker';
+        currentMarker.style.left = x + 'px';
+        currentMarker.style.top = y + 'px';
+
+        imagePreview.appendChild(currentMarker);
+
+        // Найти input-поля операционной зоны и подставить реальные координаты
+        const sidebar = document.querySelector('.sidebar');
+        if (sidebar) {
+            const inputs = sidebar.querySelectorAll('.size');
+            if (inputs.length >= 2) {
+                inputs[0].value = Math.round(realX);
+                inputs[1].value = Math.round(realY);
+            }
+        }
+    }
+
+    function removeMarker() {
+        if (currentMarker) {
+            currentMarker.remove();
+            currentMarker = null;
+        }
     }
 
     function resetImagePreview() {
         const mainDiv = document.querySelector('.main');
         if (mainDiv) {
             mainDiv.innerHTML = `
-                <div class=\"fon\">
-                    <img src=\"static/images/folder.png\" class=\"fon_folder\">
-                    <p class=\"fon_text\">Загрузите изображение</p>
+                <div class="fon">
+                    <img src="static/images/folder.png" class="fon_folder">
+                    <p class="fon_text">Загрузите изображение</p>
                 </div>
             `;
         }
+        removeMarker();
     }
 
     function showProcessedImage(filename) {
@@ -192,9 +249,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
+        removeMarker();
     }
 
-    function showImageGrid(images) {
+    function showImageGrid(images, heatmaps) {
         const mainDiv = document.querySelector('.main');
         if (mainDiv) {
             let html = '<div class="image-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">';
@@ -209,20 +267,21 @@ document.addEventListener('DOMContentLoaded', function() {
             gridImages.forEach(imgEl => {
                 imgEl.addEventListener('click', function() {
                     const idx = imgEl.getAttribute('data-idx');
-                    openImageModal(images[idx], idx);
+                    openImageModal(images[idx], heatmaps[idx]);
                 });
             });
         }
+        removeMarker();
     }
 
     // Модальное окно
-    function openImageModal(imgSrc, idx) {
+    function openImageModal(imgSrc, heatmapSrc) {
         const modal = document.getElementById('imageModal');
         const mainImg = document.getElementById('modalMainImg');
         const heatmapImg = document.getElementById('modalHeatmapImg');
         if (modal && mainImg && heatmapImg) {
             mainImg.src = imgSrc;
-            heatmapImg.src = `/heatmaps/heatmap${idx}.png`;
+            heatmapImg.src = heatmapSrc;
             modal.style.display = 'flex';
         }
     }

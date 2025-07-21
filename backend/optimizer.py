@@ -209,7 +209,26 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       map(lambda c: ((c[0]) * size, (c[1]) * size),
                           chk), size,
                       width_line=width_line,
-                      color=(155, 25, 155))
+                      color=(0, 255, 0))
+        walls = set()
+        empty = set()
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    empty.add((i, j))
+
+                if matrix[i][j] in {-3, -2}:
+                    walls.add((i, j))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          empty), size, width_line=width_line,
+                      color=(255, 255, 255))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          walls), size, width_line=width_line,
+                      color=(255, 0, 0))
 
         matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
         pal, mid_len = score_function(matrix, operation_zone, os.path.join(heatmaps_dir, f'heatmap{way}.png'))
@@ -385,7 +404,27 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       map(lambda c: ((c[0]) * size, (c[1]) * size),
                           chk), size,
                       width_line=width_line,
-                      color=(155, 25, 155))
+                      color=(0, 255, 0))
+        
+        walls = set()
+        empty = set()
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    empty.add((i, j))
+
+                if matrix[i][j] in {-3, -2}:
+                    walls.add((i, j))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          empty), size, width_line=width_line,
+                      color=(255, 255, 255))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          walls), size, width_line=width_line,
+                      color=(255, 0, 0))
 
         matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
         pal, mid_len = score_function(matrix, operation_zone, os.path.join(heatmaps_dir, f'heatmap{way}.png'))

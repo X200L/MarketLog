@@ -4,6 +4,32 @@
     <meta charset="UTF-8">
     <title>Topology</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .image-preview {
+            position: relative;
+            display: inline-block;
+        }
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            margin: auto;
+        }
+        .marker {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: red;
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 10;
+        }
+        .image-preview.clickable {
+            cursor: crosshair;
+        }
+    </style>
 </head>
 <body>
     <div class="sidebar">

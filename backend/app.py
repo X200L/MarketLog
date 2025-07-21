@@ -82,9 +82,11 @@ def build_grid():
         processed_path = os.path.join(upload_folder, processed_filename)
         starter(processed_path, operation_zone_x, operation_zone_y, robot_size, temp_upload_folder=temp_upload_folder, user_dir=user_dir)
         images = [f'/user_data/{username}/temp_uploads/warehouse_roads{i}.png' for i in range(6)]
+        heatmaps = [f'/user_data/{username}/heatmaps/heatmap{i}.png' for i in range(6)]
         return jsonify({
             'message': 'Grid built successfully',
-            'images': images
+            'images': images,
+            'heatmaps': heatmaps
         })
     except FileNotFoundError as e:
         return jsonify({'error': f'File not found: {str(e)}'}), 404
