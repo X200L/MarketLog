@@ -3,13 +3,16 @@ import os
 from yanlog import thicken_and_color_image, ImageProcessor
 import sqlite3
 import hashlib
+from main2 import starter
 
 app = Flask(__name__)
-app.secret_key = 'your_super_secret_key_1234567890'  # Установите уникальный секретный ключ
+app.secret_key = 'your_super_secret_key_1234567890'  
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['TEMP_UPLOAD_FOLDER'] = 'temp_uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config['TEMP_UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(os.path.join('backend', 'heatmaps'), exist_ok=True)
 
-# Удалить определение класса ImageProcessor здесь, использовать импортированный класс
 
 # Инициализация базы данных при запуске
 if not os.path.exists('database.db'):
@@ -58,18 +61,22 @@ def build_grid():
         data = request.get_json()
         if not data or 'filename' not in data:
             return jsonify({'error': 'No filename provided'}), 400
-        
         filename = data['filename']
+        operation_zone_x = int(data.get('operation_zone_x', 350))
+        operation_zone_y = int(data.get('operation_zone_y', 150))
+        robot_size = int(data.get('robot_size', 30))
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+ 
+        processor = ImageProcessor(app.config['UPLOAD_FOLDER'])
+        processed_filename = processor.process_file(filename)
+        processed_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_filename)
         
-        # Используем ImageProcessor из cv.yanlog
-        image_processor = ImageProcessor(app.config['UPLOAD_FOLDER'])
-        processed_filename = image_processor.process_file(filename)
-        
+        starter(processed_path, operation_zone_x, operation_zone_y, robot_size, temp_upload_folder=app.config['TEMP_UPLOAD_FOLDER'])
+        images = [f'/temp_uploads/warehouse_roads{i}.png' for i in range(6)]
         return jsonify({
             'message': 'Grid built successfully',
-            'processed_filename': processed_filename
+            'images': images
         })
-        
     except FileNotFoundError as e:
         return jsonify({'error': f'File not found: {str(e)}'}), 404
     except Exception as e:
@@ -78,7 +85,20 @@ def build_grid():
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    abs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'temp_uploads'))
+    return send_from_directory(abs_path, filename)
+
+@app.route('/temp_uploads/<filename>')
+def temp_uploaded_file(filename):
+    # Абсолютный путь к папке temp_uploads относительно корня проекта
+    project_root = os.path.abspath(os.path.dirname(__file__) + '/../')
+    abs_path = os.path.join(project_root, 'temp_uploads')
+    return send_from_directory(abs_path, filename)
+
+@app.route('/heatmaps/<filename>')
+def heatmap_file(filename):
+    abs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'heatmaps'))
+    return send_from_directory(abs_path, filename)
 
 
 def create_user(username, password):
