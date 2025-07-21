@@ -1,10 +1,12 @@
 #import json
 #from pathlib import Path
 #Инициализация
+
 def sortdict(unsorted):
     sorted_dict = {k: v for k, v in sorted(unsorted.items(), key=lambda item: item[1])}
     return sorted_dict
 def dijkstra (graphIn, start, target, agentspaths, f):
+    
     graph = graphIn
     queue = []
     distances = {}
@@ -29,9 +31,9 @@ def dijkstra (graphIn, start, target, agentspaths, f):
     #print(queue)
     for i in range(0, len(queue)):
         if agentspaths:
-            for d in range(0,len(agentspaths)):
+            for d in range(1,len(agentspaths)):
                 if d!=f and len(agentspaths[d])>i:
-                    graph[agentspaths[d][i]] = []
+                    graph[agentspaths[d][-i]] = []
                     #print('test')
         for j in range(0,len(graph[queue[i]])):
             distance = distances[queue[i]] +1
@@ -46,6 +48,8 @@ def dijkstra (graphIn, start, target, agentspaths, f):
         graph = graphIn
     #print(sortdict(distances))
     #print(parents)
+    
+    print(str(graph))
     return parents[target]
 """with open(Path("../visualization/main/graph/data.json"), "r", encoding="utf-8") as file:
     data = json.load(file)

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЯндексТопология - Визуализация</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #F2F2F2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: #000000;
+            font-family: Arial, sans-serif;
+        }
+        
+        .header img {
+            height: 40px;
+        }
+        
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px;
+            background: #f5f5f5;
+        }
+        
+        .visualization-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+            color: #000000;
+            font-family: Arial, sans-serif;
+        }
+        
+        .animation-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+            min-height: 450px;
+            background: #F2F2F2;
+            border-radius: 16px;
+            padding: 16px;
+        }
+        
+        .animation-container img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .btn {
+            padding: 16px 24px;
+            background: #FDD329;
+            color: #222;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            transition: background 0.2s;
+            cursor: pointer;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background: #ffe666;
+        }
+        
+        .btn-play {
+            background: #FDD329;
+        }
+        
+        .btn-prev, .btn-next {
+            background: #F2F2F2;
+            color: #4A4A4A;
+        }
+        
+        .btn-prev:hover, .btn-next:hover {
+            background: #e0e0e0;
+        }
+        
+        .frame-info {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 16px 24px;
+            background: #F2F2F2;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            color: #4A4A4A;
+            font-family: Arial, sans-serif;
+        }
+        
+        .legend {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            width: 100%;
+            max-width: 900px;
+            margin-top: 24px;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 16px 0;
+            font-size: 16px;
+            color: #4A4A4A;
+            font-family: Arial, sans-serif;
+        }
+        
+        .progress {
+            width: 100%;
+            background: #F2F2F2;
+            border-radius: 8px;
+            margin: 16px 0;
+            height: 10px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #FDD329;
+            border-radius: 8px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .visualization-container, .legend {
+                padding: 24px;
+            }
+            
+            .main {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="ya.png" alt="Яндекс">
+        <h1>Топология</h1>
+    </header>
+    
+    <main class="main">
+        <div class="visualization-container">
+            <h2 class="section-title">Визуализация топологии склада</h2>
+            
+            <div class="animation-container">
+                <img id="animation-frame" src="" alt="Кадр анимации">
+            </div>
+            
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="loading" id="loading">Загрузка кадров...</div>
+            
+            <div class="controls">
+                <button id="play-pause" class="btn btn-play">Пауза</button>
+                <button id="prev" class="btn btn-prev">← Назад</button>
+                <button id="next" class="btn btn-next">Вперед →</button>
+                <div id="frame-info" class="frame-info">Кадр 0 из 0</div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h2 class="section-title">Легенда</h2>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: white;"></div>
+                    <div>Дорога (0)</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: black;"></div>
+                    <div>Стена (1)</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: brown;"></div>
+                    <div>Стеллаж (2)</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: yellow;"></div>
+                    <div>Операционная зона (%)</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: white; border: 2px solid blue; position: relative;">
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 15px; height: 15px; background-color: blue; border-radius: 50%;"></div>
+                    </div>
+                    <div>Робот (R)</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Конфигурация
+        const interval = {{ interval }};
+        const batchSize = {{ batch_size }};
+        
+        // Состояние
+        let currentFrame = 0;
+        let totalFrames = 0;
+        let isPlaying = false;
+        let intervalId;
+        let frameCache = {};
+        let processingComplete = false;
+        
+        // Элементы
+        const frameImg = document.getElementById('animation-frame');
+        const playPauseBtn = document.getElementById('play-pause');
+        const prevBtn = document.getElementById('prev');
+        const nextBtn = document.getElementById('next');
+        const frameInfo = document.getElementById('frame-info');
+        const loading = document.getElementById('loading');
+        const progressBar = document.getElementById('progress-bar');
+        
+        // Загрузка готовых кадров
+        async function loadReadyFrames() {
+            try {
+                const response = await fetch('/ready_frames');
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки кадров');
+                }
+                
+                const data = await response.json();
+                
+                // Обновляем кэш
+                for (const [frameIndex, frameData] of Object.entries(data.frames)) {
+                    frameCache[frameIndex] = {
+                        image: `data:image/png;base64,${frameData}`,
+                        frame: parseInt(frameIndex),
+                        total: data.total_frames
+                    };
+                }
+                
+                // Обновляем общее количество кадров
+                totalFrames = data.total_frames;
+                processingComplete = data.complete;
+                
+                // Обновляем прогресс-бар
+                updateProgressBar();
+                
+                // Если текущий кадр пуст, показываем первый доступный
+                if (!frameImg.src && Object.keys(frameCache).length > 0) {
+                    const firstFrame = Math.min(...Object.keys(frameCache).map(Number));
+                    displayFrame(firstFrame);
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Ошибка загрузки кадров:', error);
+                return false;
+            }
+        }
+        
+        // Загрузка конкретного кадра
+        async function loadFrame(frameIndex) {
+            if (frameCache[frameIndex]) {
+                return frameCache[frameIndex];
+            }
+            
+            try {
+                const response = await fetch(`/frame/${frameIndex}`);
+                if (!response.ok) {
+                    throw new Error('Ошибка загрузки кадра');
+                }
+                
+                const data = await response.json();
+                frameCache[frameIndex] = {
+                    image: `data:image/png;base64,${data.image}`,
+                    frame: data.frame,
+                    total: data.total
+                };
+                
+                return frameCache[frameIndex];
+            } catch (error) {
+                console.error('Ошибка загрузки кадра:', error);
+                return null;
+            }
+        }
+        
+        // Отображение кадра
+        async function displayFrame(frameIndex) {
+            // Проверяем, есть ли кадр в кэше
+            if (!frameCache[frameIndex]) {
+                // Загружаем кадр
+                const frameData = await loadFrame(frameIndex);
+                if (!frameData) return false;
+            }
+            
+            const frameData = frameCache[frameIndex];
+            frameImg.src = frameData.image;
+            frameInfo.textContent = `Кадр ${frameData.frame} из ${frameData.total}`;
+            currentFrame = frameIndex;
+            return true;
+        }
+        
+        // Обновление прогресс-бара
+        function updateProgressBar() {
+            const loadedCount = Object.keys(frameCache).length;
+            const progress = processingComplete ? 100 : Math.min(99, Math.round((loadedCount / totalFrames) * 100));
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        // Следующий кадр
+        async function nextFrame() {
+            const nextFrameIndex = currentFrame + 1;
+            if (nextFrameIndex >= totalFrames) {
+                if (processingComplete) {
+                    // Если обработка завершена, переходим к началу
+                    await displayFrame(0);
+                }
+                return;
+            }
+            
+            await displayFrame(nextFrameIndex);
+        }
+        
+        // Предыдущий кадр
+        async function prevFrame() {
+            const prevFrameIndex = Math.max(0, currentFrame - 1);
+            await displayFrame(prevFrameIndex);
+        }
+        
+        // Воспроизведение
+        async function playAnimation() {
+            if (!isPlaying) {
+                isPlaying = true;
+                playPauseBtn.textContent = 'Пауза';
+                playPauseBtn.classList.add('btn-play');
+                intervalId = setInterval(async () => {
+                    await nextFrame();
+                }, interval);
+            }
+        }
+        
+        // Пауза
+        function pauseAnimation() {
+            if (isPlaying) {
+                isPlaying = false;
+                playPauseBtn.textContent = 'Продолжить';
+                playPauseBtn.classList.remove('btn-play');
+                clearInterval(intervalId);
+            }
+        }
+        
+        // Обработчики событий
+        playPauseBtn.addEventListener('click', function() {
+            if (isPlaying) pauseAnimation();
+            else playAnimation();
+        });
+        
+        prevBtn.addEventListener('click', async function() {
+            pauseAnimation();
+            await prevFrame();
+        });
+        
+        nextBtn.addEventListener('click', async function() {
+            pauseAnimation();
+            await nextFrame();
+        });
+        
+        // Инициализация
+        async function init() {
+            // Запускаем периодическую загрузку готовых кадров
+            setInterval(loadReadyFrames, 500);
+            
+            // Загружаем первые кадры
+            await loadReadyFrames();
+            
+            // Показываем первый кадр
+            if (Object.keys(frameCache).length > 0) {
+                const firstFrame = Math.min(...Object.keys(frameCache).map(Number));
+                await displayFrame(firstFrame);
+                playAnimation();
+            }
+        }
+        
+        // Запуск
+        init();
+    </script>
+</body>
+</html>
