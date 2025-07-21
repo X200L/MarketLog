@@ -11,11 +11,11 @@ def matrix_to_json(matrix, output_path):
 
     for i in range(1, len(matrix) - 1):
         for j in range(1, len(matrix[i]) - 1):
-            res["road"][f'{i}:{j}'] = []
-            if matrix[i][j] in {-1, 0, 2, 4}:
+            if matrix[i][j] in {-1, 2, 4}:
+                res["road"][f'{i}:{j}'] = []
                 nb = [(i + 1, j), (i - 1, j), (i, j + 1), (i, j - 1)]
                 for t in nb:
-                    if matrix[t[0]][t[1]] in {-1, 0, 2, 4}:
+                    if matrix[t[0]][t[1]] in {-1, 2, 4}:
                         res["road"][f'{i}:{j}'].append(t)
 
     with open(output_path, 'w') as file:

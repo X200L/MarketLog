@@ -3,54 +3,43 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from matplotlib.patches import Rectangle
-from Mesher.usr_lib.search_bfs import search_bfs
+from Mesher.usr_lib.dist_on_road import dist_on_road
 
 
-def score_function(matrix, operation_zone, path=None):
+def score_function(matrix, operation_zones, path=None):
     counter = 0
-    road_graph = {}
-    nb = ((1, 0), (-1, 0), (0, 1), (0, -1))
+    charg = 0
     score_matrix = np.array(
         [[float('inf') for _ in range(len(matrix[0]))] for _ in
          range(len(matrix))])
 
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            if matrix[i][j] in {-1, 0, 2, 4}:
-                tmp = []
-                for c in nb:
-                    dy, dx = c
-                    if matrix[i + dy][j + dx] in {-1, 0, 2, 4}:
-                        tmp.append((i + dy, j + dx))
-                road_graph[(i, j)] = tmp
-
-    dst = search_bfs(road_graph, (operation_zone[1] - 1,
-                                  operation_zone[0] - 1), flag=True)
-
+    dst = dist_on_road(matrix, operation_zones)
     all_len = 0
 
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
+            if matrix[i][j] == 3:
+                charg += 1
+
             if matrix[i][j] == 1:
                 counter += 1
-                tmp = []
-                v = []
-                for c in nb:
-                    dy, dx = c
-                    if matrix[i + dy][j + dx] in {-1, 0, 2, 4}:
-                        tmp.append(dst[(i + dy, j + dx)] + 1)
-                        v.append((i, j))
 
-                all_len += min(tmp)
-                score_matrix[v[tmp.index(min(tmp)) - 1][0]][v[tmp.index(min(tmp)) - 1][1]] = min(tmp)
+                score_matrix[i][j] = dst[(i, j)] + 1
+
+                all_len += dst[(i, j)] + 1
 
     if path is not None:
         plt.figure()
+        plt.title(f"Heatmap топологии склада", fontsize=14)
 
-        ax = sns.heatmap(score_matrix, cmap="autumn_r", square=True,
-                         xticklabels=False, yticklabels=False, vmin=0,
-                         vmax=max(filter(lambda t: t != float('inf'),
-                                         dst.values())) * 1.5)
+        try:
+            ax = sns.heatmap(score_matrix, cmap="autumn_r", square=True,
+                             xticklabels=False, yticklabels=False, vmin=0,
+                             vmax=max(dst.values()) * 1.5)
+        except ValueError:
+            ax = sns.heatmap(score_matrix, cmap="autumn_r", square=True,
+                             xticklabels=False, yticklabels=False, vmin=0,
+                             vmax=0)
 
         for i in range(len(matrix)):
             for j in range(len(matrix[i])):
@@ -84,6 +73,16 @@ def score_function(matrix, operation_zone, path=None):
                                            facecolor=(255 / 255, 255 / 255,
                                                       255 / 255)))
 
+    try:
+        plt.suptitle(f"{counter} - стеллажей; {round(all_len / counter, 3)} - среднее растояние до стеллажа; {charg} - зарядок", y=0.07, fontsize=8)
+        return counter, all_len / counter, charg
+
+    except ZeroDivisionError:
+        return 0, float('inf'), charg
+
+    finally:
         plt.savefig(path, dpi=300)
 
-    return counter, all_len / counter
+
+if __name__ == "__main__":
+    pass

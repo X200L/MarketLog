@@ -2,7 +2,8 @@ import numpy as np
 import heapq
 
 
-def dijkstra_for_matrix(matrix, start, targets_set, road_weight=0, pallet_weight=1):
+def dijkstra_for_matrix(matrix, start, targets_set, road_weight=1,
+                        pallet_weight=1):
     sx, sy = start
     rows = len(matrix)
     cols = len(matrix[0])
@@ -35,3 +36,4 @@ def dijkstra_for_matrix(matrix, start, targets_set, road_weight=0, pallet_weight
 
 
 if __name__ == "__main__":
+    pass

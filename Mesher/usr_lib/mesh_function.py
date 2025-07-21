@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 
 from PIL import ImageDraw, Image
@@ -7,7 +8,7 @@ from Mesher.usr_lib.coloring_cell import coloring_cell
 from Mesher.usr_lib.search_bfs import search_bfs
 
 
-def mesh_function(image_path, operation_zone_x, operation_zone_y,
+def mesh_function(image_path, operation_zones,
                   size=10, color_cell="black", width_line=1, epsilon=0.00):
     # функция для разбиения схемы склада рабочие области
 
@@ -16,8 +17,17 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
 
     image = Image.open(image_path)
 
+    operation_zone_x, operation_zone_y = operation_zones[0]
     offset_x = operation_zone_x % size
     offset_y = operation_zone_y % size
+
+    for i in operation_zones[1::]:
+        operation_zone_x2, operation_zone_y2 = i
+        if (offset_x != operation_zone_x2 % size or offset_y !=
+                operation_zone_y2 % size):
+            print("Операционные зоны не связаны сеткой!")
+            sys.exit()
+
     width, height = image.size
 
     left = size - offset_x
@@ -66,6 +76,12 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
     graph = create_graph(vertex, ((operation_zone_x + left) // size,
                                   (operation_zone_y + top) // size))
 
+    for operation_zone_x, operation_zone_y in operation_zones:
+        if ((operation_zone_x + left) // size,
+                (operation_zone_y + top) // size) not in graph:
+            print("Операционные зоны находятся в разных компонентах связности!")
+            sys.exit()
+
     wall_graph = create_graph(wall_vertex, (0, 0))
 
     for ky in range(0, cell_top + 1):
@@ -94,7 +110,9 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
     image.save('../tmp_photo/warehouse_meshed.png')
     coloring_cell('../tmp_photo/warehouse_meshed.png',
                   [(operation_zone_x + left - size, operation_zone_y + top
-                    - size)], size, color=(0, 100, 100), width_line=width_line)
+                    - size) for operation_zone_x, operation_zone_y
+                   in operation_zones], size, color=(0, 100, 100),
+                  width_line=width_line)
 
     # -3 - стена
     # -2 - внутреннее препятствие
@@ -111,12 +129,13 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
     for i in search_bfs(wall_graph, (0, 0)):
         matrix_const[i[1] - 1][i[0] - 1] = -3
 
-    ozy_cell = (operation_zone_y + top) // size - 1
-    ozx_cell = (operation_zone_x + left) // size - 1
-
     for i in graph:
         matrix_const[i[1] - 1][i[0] - 1] = 0
-    matrix_const[ozy_cell][ozx_cell] = -1
+
+    for operation_zone_x, operation_zone_y in operation_zones:
+        ozy_cell = (operation_zone_y + top) // size - 1
+        ozx_cell = (operation_zone_x + left) // size - 1
+        matrix_const[ozy_cell][ozx_cell] = -1
 
     img_copy = Image.open('../tmp_photo/warehouse_meshed.png')
     for i in range(0, 6):
@@ -128,4 +147,5 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
 
 if __name__ == "__main__":
     mesh_function('../outline_of_warehouse/img4.png',
-                  400, 300, 30)
+                  [(580+30, 200+390), (520+420, 290+120),
+                   (580, 200)], 30)
