@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="zones file-section">
                             </div>
                             <button class="upload-btn build-btn" style="margin-top:24px;">Построить сетку</button>
-                            <button class="upload-btn download-btn" style="background:#f2f2f2; color:#111;">Скачать файл</button>
+                            
                         `;
                         
                         // Добавляем обработчики для новых кнопок
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
             gridImages.forEach(imgEl => {
                 imgEl.addEventListener('click', function() {
                     const idx = imgEl.getAttribute('data-idx');
-                    openImageModal(images[idx], heatmaps[idx]);
+                    openImageModal(images[idx], heatmaps[idx], idx);
                 });
             });
         }
@@ -275,13 +275,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Модальное окно
-    function openImageModal(imgSrc, heatmapSrc) {
+    function openImageModal(imgSrc, heatmapSrc, idx) {
         const modal = document.getElementById('imageModal');
         const mainImg = document.getElementById('modalMainImg');
         const heatmapImg = document.getElementById('modalHeatmapImg');
-        if (modal && mainImg && heatmapImg) {
+        const downloadJsonBtn = document.getElementById('downloadJsonBtn');
+        const runSimulationBtn = document.getElementById('runSimulationBtn');
+        if (modal && mainImg && heatmapImg && downloadJsonBtn && runSimulationBtn) {
             mainImg.src = imgSrc;
             heatmapImg.src = heatmapSrc;
+            let jsonPath = '';
+            if (heatmapSrc.includes('heatmaps/heatmap')) {
+                jsonPath = heatmapSrc.replace('heatmaps/heatmap', 'graph/graph').replace('.png', '.json');
+            } else {
+                jsonPath = `graph/graph${idx}.json`;
+            }
+            downloadJsonBtn.href = jsonPath;
+            downloadJsonBtn.setAttribute('download', `graph${idx}.json`);
+            runSimulationBtn.onclick = function() {
+                // Здесь должна быть логика запуска симуляции
+                
+            };
             modal.style.display = 'flex';
         }
     }

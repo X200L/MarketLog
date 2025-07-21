@@ -49,45 +49,50 @@ def score_function(matrix, operation_zone, path=None):
 
     if path is not None:
         fig, ax = plt.subplots()
+        try:
+            plt.title(f"Heatmap топологии склада", fontsize=14)
+            ax = sns.heatmap(score_matrix, cmap="autumn_r", square=True,
+                             xticklabels=False, yticklabels=False, vmin=0,
+                             vmax=max(filter(lambda t: t != float('inf'),
+                                             dst.values())) * 1.5)
 
-        ax = sns.heatmap(score_matrix, cmap="autumn_r", square=True,
-                         xticklabels=False, yticklabels=False, vmin=0,
-                         vmax=max(filter(lambda t: t != float('inf'),
-                                         dst.values())) * 1.5)
+            for i in range(len(matrix)):
+                for j in range(len(matrix[i])):
+                    if matrix[i][j] == -1:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(0 / 255, 100 / 255,
+                                                          100 / 255)))
 
-        for i in range(len(matrix)):
-            for j in range(len(matrix[i])):
-                if matrix[i][j] == -1:
-                    ax.add_patch(Rectangle((j, i), 1, 1,
-                                           facecolor=(0 / 255, 100 / 255,
-                                                      100 / 255)))
+                    if matrix[i][j] in {-3, -2}:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(200 / 255, 200 / 255,
+                                                          200 / 255)))
 
-                if matrix[i][j] in {-3, -2}:
-                    ax.add_patch(Rectangle((j, i), 1, 1,
-                                           facecolor=(200 / 255, 200 / 255,
-                                                      200 / 255)))
+                    if matrix[i][j] == 4:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(100 / 255, 100 / 255,
+                                                          100 / 255)))
 
-                if matrix[i][j] == 4:
-                    ax.add_patch(Rectangle((j, i), 1, 1,
-                                           facecolor=(100 / 255, 100 / 255,
-                                                      100 / 255)))
+                    if matrix[i][j] == 3:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(0 / 255, 255 / 255,
+                                                          0 / 255)))
 
-                if matrix[i][j] == 3:
-                    ax.add_patch(Rectangle((j, i), 1, 1,
-                                           facecolor=(0 / 255, 255 / 255,
-                                                      0 / 255)))
+                    if matrix[i][j] == 2:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(0 / 255, 255 / 255,
+                                                          255 / 255)))
 
-                if matrix[i][j] == 2:
-                    ax.add_patch(Rectangle((j, i), 1, 1,
-                                           facecolor=(0 / 255, 255 / 255,
-                                                      255 / 255)))
+                    if matrix[i][j] == 0:
+                        ax.add_patch(Rectangle((j, i), 1, 1,
+                                               facecolor=(255 / 255, 255 / 255,
+                                                          255 / 255)))
 
-                if matrix[i][j] == 0:
-                    ax.add_patch(Rectangle((j, i), 1, 1,
-                                           facecolor=(255 / 255, 255 / 255,
-                                                      255 / 255)))
-
-        fig.savefig(path, dpi=300)
-        plt.close(fig)
-
-    return counter, all_len / counter
+            # suptitle с нужной информацией
+            plt.suptitle(f"{counter} - стеллажей; {round(all_len / counter, 3)} - среднее растояние до стеллажа", y=0.07, fontsize=8)
+            return counter, all_len / counter
+        except ZeroDivisionError:
+            return 0, float('inf')
+        finally:
+            fig.savefig(path, dpi=300, bbox_inches='tight')
+            plt.close(fig)
