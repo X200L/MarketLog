@@ -27,10 +27,14 @@ if not os.path.exists('database.db'):
     conn.close()
 
 @app.route('/')
-def index():
-    if 'user_id' in session:
-        return render_template('index.html')
-    return redirect(url_for('login'))
+def landing():
+    return render_template('index.html')
+
+@app.route('/lc')
+def lc():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_template('lc.html')
 
 
 @app.route('/upload', methods=['POST'])
@@ -175,7 +179,7 @@ def login():
             if user and user['password'] == hashed_password:
                 session['user_id'] = user['id']
                 session['username'] = user['username']
-                return redirect(url_for('index'))
+                return redirect(url_for('lc'))
             else:
                 error = 'Неправильное имя пользователя или пароль'
     return render_template('login.html', error=error)
