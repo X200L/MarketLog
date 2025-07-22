@@ -1,3 +1,5 @@
+window.lcImages = JSON.parse(document.getElementById('lcImagesData').textContent);
+window.lcHeatmaps = JSON.parse(document.getElementById('lcHeatmapsData').textContent);
 document.addEventListener('DOMContentLoaded', function() {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {

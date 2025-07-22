@@ -3,6 +3,7 @@ import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib import colors
 from matplotlib.patches import Circle, Rectangle
 from flask import Flask, render_template, jsonify

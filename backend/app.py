@@ -50,7 +50,7 @@ def lc():
         if os.path.exists(os.path.join(heatmaps, f'heatmap{i}.png')):
             heatmap_images.append(heatmap_path)
         else:
-            heatmap_images.append(None)
+            heatmap_images.append('')
     return render_template('lc.html', images=images, heatmaps=heatmap_images)
 
 
@@ -208,4 +208,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5001)

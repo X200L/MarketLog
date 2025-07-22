@@ -9,8 +9,10 @@
 <body>
     <div class="header">
         <div class="header-left">
-            <img src="{{ url_for('static', filename='images/yandex_icon.svg.png') }}" alt="Я" class="yandex-logo">
-            <span class="header-title">Топология</span>
+            
+                <img src="{{ url_for('static', filename='images/yandex_icon.svg.png') }}" alt="Я" class="yandex-logo">
+                <span class="header-title">Топология</span>
+            
         </div>
         <div class="header-right">
             <div class="user-icon">
@@ -52,6 +54,8 @@
             </div>
         </div>
     </div>
+    <script id="lcImagesData" type="application/json">{{ images|tojson }}</script>
+    <script id="lcHeatmapsData" type="application/json">{{ heatmaps|tojson }}</script>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
 </body>
 </html>
