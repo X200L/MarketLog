@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Яндекс Топология</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -14,75 +14,107 @@
         </div>
         <nav class="header__nav">
             <a href="#about">О проекте</a>
-            <a href="#team">Команда</a>
-            <a href="#start">Начать пользоваться</a>
+            <a href="#advantages">Преимущества</a>
+            <a href="#faq">FAQ</a>
+            <a href="#start">Начать</a>
         </nav>
-        <div class="header__user">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12" r="6" fill="#E0E0E0"/><rect x="6" y="22" width="20" height="8" rx="4" fill="#E0E0E0"/></svg>
-            <button class="header__login" onclick="window.location.href='/login'">Войти</button>
+        <button class="header__burger" id="burgerBtn" aria-label="Открыть меню" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+            <a href="#about">О проекте</a>
+            <a href="#advantages">Преимущества</a>
+            <a href="#faq">FAQ</a>
+            <a href="#start">Начать</a>
         </div>
+        <div class="mobile-menu-backdrop" id="mobileMenuBackdrop"></div>
     </header>
     <main>
-        <section class="hero">
+        <section class="hero" id="about">
             <div class="hero__text">
-                <h1><b>Яндекс Топология</b> - сервис для проектирования топологии логистических систем и оптимизации складов</h1>
+                <h1>Яндекс Топология — сервис для проектирования топологии логистических систем и оптимизации складов</h1>
                 <button class="btn btn-yellow" onclick="window.location.href='/login'">Начать пользоваться</button>
             </div>
             <div class="hero__img">
-                <img src="{{ url_for('static', filename='images/new.png') }}" alt="Скриншот ноутбука">
+                <img src="{{ url_for('static', filename='images/new.png') }}" alt="Скриншот ноутбука" loading="lazy">
             </div>
         </section>
-    <section class="features">
-        <h2>Функции</h2>
-        <div class="features__list">
-            <div class="feature">
-                <h3>Распознавание складов</h3>
-                <p>С помощью использования технологии машинного зрения происходит распознавание склада с плана здания</p>
+        <section class="features">
+            <h2>Функции</h2>
+            <div class="features__list">
+                <div class="feature">
+                    <h3>Распознавание складов</h3>
+                    <p>Машинное зрение для распознавания склада с плана здания</p>
+                </div>
+                <div class="feature">
+                    <h3>Автоматическая расстановка</h3>
+                    <p>Автоматическая расстановка стеллажей</p>
+                </div>
+                <div class="feature">
+                    <h3>Визуализация</h3>
+                    <p>Удобная визуализация и личный кабинет</p>
+                </div>
             </div>
-            <div class="feature">
-                <h3>Автоматическая расстановка</h3>
-                <p>Данное ПО позволяет автоматически расставлять стеллажи</p>
+        </section>
+        <section class="advantages" id="advantages">
+            <h2>Преимущества</h2>
+            <div class="advantages__list">
+                <div class="advantage">
+                    <h4>Оптимизация времени</h4>
+                    <p>Проектирование склада занимает в разы меньше времени</p>
+                </div>
+                <div class="advantage">
+                    <h4>Кроссплатформенность</h4>
+                    <p>Доступ с любого устройства, где бы вы ни были</p>
+                </div>
+                <div class="advantage">
+                    <h4>Подписка Яндекс 180</h4>
+                    <p>Для получения темной темы оплатите подписку в 180 рублей (пасхалка)</p>
+                </div>
             </div>
-            <div class="feature">
-                <h3>Визуализация</h3>
-                <p>Удобная визуализация и личный кабинет</p>
+        </section>
+        <section class="faq" id="faq">
+            <h2>FAQ</h2>
+            <div class="faq__list">
+                <div class="faq__item">
+                    <button class="faq__question" aria-expanded="false">Как начать пользоваться сервисом?</button>
+                    <div class="faq__answer">Нажмите кнопку "Начать пользоваться" и зарегистрируйтесь.</div>
+                </div>
+                <div class="faq__item">
+                    <button class="faq__question" aria-expanded="false">В каком формате должны быть схемы складов?</button>
+                    <div class="faq__answer">Схемы должны быть изображениями в формате png, jpg или pdf.</div>
+                </div>
+                <div class="faq__item">
+                    <button class="faq__question" aria-expanded="false">Можно ли обвести границы склада самостоятельно?</button>
+                    <div class="faq__answer">Можно, для этого есть специальный блок на сайте.</div>
+                </div>
+                <div class="faq__item">
+                    <button class="faq__question" aria-expanded="false">Как выбрать масштаб сетки?</button>
+                    <div class="faq__answer">Масштаб сетки вводится пользователем в специально отведенной графе.</div>
+                </div>
             </div>
-        </div>
-    </section>
-
-    <section class="team" id="team">
-        <h2>Команда проекта</h2>
-        <div class="team__list">
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-            <div class="team__member"></div>
-        </div>
-    </section>
-    <section class="start" id="start">
-        <h2>Начать пользоваться</h2>
-        <div class="start__block">
-            <div class="start__img">
-                <img src="{{ url_for('static', filename='images/new2.png') }}" alt="Скриншот ноутбука 2">
+        </section>
+        <section class="start" id="start">
+            <h2>Начать пользоваться</h2>
+            <div class="start__block">
+                <div class="start__img">
+                    <img src="{{ url_for('static', filename='images/new2.png') }}" alt="Скриншот ноутбука 2" loading="lazy">
+                </div>
+                <div class="start__text">
+                    <h3>Простой и удобный сервис для проектирования топологии логистических систем и оптимизации складов.</h3>
+                    <button class="btn btn-yellow" onclick="window.location.href='/login'">Начать пользоваться</button>
+                </div>
             </div>
-            <div class="start__text">
-                <h3><b>Яндекс Топология</b> - Простой и удобный сервис для проектирования топологии логистических систем и оптимизации складов.</h3>
-                <button class="btn btn-yellow" onclick="window.location.href='/login'">Начать пользоваться</button>
-            </div>
-        </div>
-    </section>
+        </section>
     </main>
     <footer class="footer">
         <div class="footer__logo">
-            <img src="{{ url_for('static', filename='ya.svg') }}" alt="Яндекс Топология" height="32">
+            <img src="{{ url_for('static', filename=' images/ya.svg') }}" alt="Яндекс Топология" height="32">
             <span>Топология</span>
         </div>
         <p class="footer__center">Яндекс Топология 2025</p>
         <p class="footer__right">frogeesoft.team@gmail.com</p>
     </footer>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
 </body>
 </html> 
