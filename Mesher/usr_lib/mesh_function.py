@@ -6,8 +6,7 @@ from Mesher.usr_lib.create_graph import create_graph
 from Mesher.usr_lib.coloring_cell import coloring_cell
 from Mesher.usr_lib.search_bfs import search_bfs
 
-
-def mesh_function(image_path, operation_zone_x, operation_zone_y,
+def mesh_function(image_path, operation_zone_x, operation_zone_y, chat_id,
                   size=10, color_cell="black", width_line=1, epsilon=0.00):
     # функция для разбиения схемы склада рабочие области
     """функция возвращает изменённую фотографию и
@@ -121,7 +120,6 @@ def mesh_function(image_path, operation_zone_x, operation_zone_y,
     for i in range(0, 6):
         img_copy.save(f'../tmp_photo/warehouse_roads{i}.png')
     img_copy.close()
-
     return matrix_const, size, width_line
 
 

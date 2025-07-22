@@ -56,7 +56,7 @@ def file_page():
 
 
 @app.route('/build-grid', methods=['POST'])
-def build_grid():
+def build_grid(chat_id):
     try:
         data = request.get_json()
         if not data or 'filename' not in data:
@@ -72,7 +72,7 @@ def build_grid():
         processed_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_filename)
         
         starter(processed_path, operation_zone_x, operation_zone_y, robot_size, temp_upload_folder=app.config['TEMP_UPLOAD_FOLDER'])
-        images = [f'/temp_uploads/warehouse_roads{i}.png' for i in range(6)]
+        images = [f'temp_uploads/warehouse_roads{i}.png' for i in range(6)]
         return jsonify({
             'message': 'Grid built successfully',
             'images': images
