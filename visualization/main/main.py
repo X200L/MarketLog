@@ -33,7 +33,11 @@ def shit(ticks, q):
                     agentspaths.append(r[b].path)
                 if m == 0:
                     print(r[i].trycords)
-                    r[i].task = random.randint(0, len(s)-1)
+                    o = 1
+                    while o:
+                        r[i].task = random.randint(0, len(s)-1)
+                        if s[r[i].task].state==0:
+                            o = 0
                     s[r[i].task].state = 1
                     r[i].path = agent.drawagentmap(s[r[i].task].cords, agentspaths, maprix, r[i].trycords,i)
                     if not(r[i].path):
@@ -45,7 +49,7 @@ def shit(ticks, q):
                     #print(i)
                     print('Robot '+str(i)+' started, assigning new task: '+str(s[r[i].task].cords))
                     print(r[i].path)
-                    log.write(str(m)+'\n')
+                    #log.write(str(m)+'\n')
                     log.write('Robot '+str(i)+' started, assigning new task: '+str(s[r[i].task].cords)+"\n")
                     log.write(str(r[i].path)+"\n")
                 else:
@@ -81,6 +85,9 @@ def shit(ticks, q):
                             r[i].task = random.randint(0, len(s)-1)
                             if s[r[i].task].state==0:
                                 o = 0
+                            else:
+                                print('error')
+                                log.write('error')
                         s[r[i].task].state = 1
                         r[i].path = agent.drawagentmap(s[r[i].task].cords, agentspaths, maprix, r[i].trycords,i)
                         if not(r[i].path):
@@ -92,7 +99,7 @@ def shit(ticks, q):
                         #print(i)
                         print('Robot '+str(i)+' finished, assigning new task: '+str(s[r[i].task].cords))
                         print(r[i].path)
-                        log.write(str(m)+'\n')
+                        #log.write(str(m)+'\n')
                         log.write('Robot '+str(i)+' finished, assigning new task: '+str(s[r[i].task].cords)+"\n")
                         log.write(str(r[i].path)+"\n")
                     elif r[i].trycords == start:
@@ -143,6 +150,7 @@ def shit(ticks, q):
                     maprix = r[i].move(r[i].path[-1], maprix, 'S')
                     print(r[i].trycords)
                     print(s[r[i].task].state)
+                    print(r[i].task)
                     if r[i].below == 'S' or r[i].below == 'R':
                         if r[i].trycords == start:
                             r[i].below = '%'
@@ -152,6 +160,7 @@ def shit(ticks, q):
                     maprix = r[i].move(r[i].path[-1], maprix, 'R')
                     print(r[i].cords)
                     print(s[r[i].task].state)
+                    print(r[i].task)
                     if r[i].below == 'S' or r[i].below == 'R':
                         if r[i].trycords == start:
                             r[i].below = '%'
@@ -169,8 +178,3 @@ def shit(ticks, q):
             print(m)
             break
     return 'success'
-u = 'error'
-q = 0
-while u == 'error':
-    u = shit(1000,q)
-    q+=1
