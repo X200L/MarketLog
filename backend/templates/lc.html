@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>ЯТопология</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='images/yandex_icon.svg.png') }}" alt="Я" class="yandex-logo">
+            <span class="header-title">Топология</span>
+        </div>
+        <div class="header-right">
+            <div class="user-icon">
+                <svg width="20" height="20" fill="none" stroke="#888" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 20c0-4  8-4 8-4s8 0 8 4"/>
+                </svg>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Выйти</button>
+        </div>
+    </div>
+    <div class="main-content" style="display: flex; flex-direction: column; align-items: center;">
+        <div class="recent-projects-block" style="width: 100%; max-width: 1200px;">
+            <span class="recent-title">Недавние проекты:</span>
+            <button class="new-btn" onclick="window.location.href='/file'">Новый</button>
+        </div>
+        <div class="topology-grid">
+            {% for i in range(6) %}
+                {% if images[i] %}
+                <div class="topology-grid-item">
+                    <img src="{{ images[i] }}" alt="Топология {{i}}" data-idx="{{i}}">
+                </div>
+                {% else %}
+                <div class="topology-grid-item"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div id="imageModal" class="modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+        <div class="modal-content" style="background:#fff; border-radius:12px; padding:24px; display:flex; gap:24px; max-width:90vw; max-height:90vh; align-items:center; position:relative; flex-direction:column;">
+            <span id="closeModal" style="position:absolute; top:12px; right:20px; font-size:2rem; cursor:pointer;">&times;</span>
+            <div style="display:flex; gap:24px; align-items:center;">
+                <img id="modalMainImg" src="" alt="" style="max-width:40vw; max-height:80vh; border-radius:8px; box-shadow:0 2px 8px #0001;">
+                <img id="modalHeatmapImg" src="" alt="Heatmap" style="max-width:40vw; max-height:80vh; border-radius:8px; box-shadow:0 2px 8px #0001;">
+            </div>
+            <div id="modalButtons" style="margin-top:24px; display:flex; gap:16px;">
+                <a id="downloadJsonBtn" href="#" download class="upload-btn" style="font-size:18px; padding:8px 24px; text-decoration:none;">Скачать граф</a>
+                <button id="runSimulationBtn" class="upload-btn" style="font-size:18px; padding:8px 24px;">Запустить симуляцию</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
+</html>

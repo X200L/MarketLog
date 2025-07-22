@@ -27,10 +27,31 @@ if not os.path.exists('database.db'):
     conn.close()
 
 @app.route('/')
-def index():
-    if 'user_id' in session:
-        return render_template('index.html')
-    return redirect(url_for('login'))
+def landing():
+    return render_template('index.html')
+
+@app.route('/lc')
+def lc():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    username = session['username']
+    user_dir = os.path.join('user_data', username)
+    temp_uploads = os.path.join(user_dir, 'temp_uploads')
+    heatmaps = os.path.join(user_dir, 'heatmaps')
+    images = []
+    heatmap_images = []
+    for i in range(6):
+        img_path = f'/user_data/{username}/temp_uploads/warehouse_roads{i}.png'
+        heatmap_path = f'/user_data/{username}/heatmaps/heatmap{i}.png'
+        if os.path.exists(os.path.join(temp_uploads, f'warehouse_roads{i}.png')):
+            images.append(img_path)
+        else:
+            images.append(None)
+        if os.path.exists(os.path.join(heatmaps, f'heatmap{i}.png')):
+            heatmap_images.append(heatmap_path)
+        else:
+            heatmap_images.append(None)
+    return render_template('lc.html', images=images, heatmaps=heatmap_images)
 
 
 @app.route('/upload', methods=['POST'])
@@ -175,7 +196,7 @@ def login():
             if user and user['password'] == hashed_password:
                 session['user_id'] = user['id']
                 session['username'] = user['username']
-                return redirect(url_for('index'))
+                return redirect(url_for('lc'))
             else:
                 error = 'Неправильное имя пользователя или пароль'
     return render_template('login.html', error=error)

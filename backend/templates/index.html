@@ -2,32 +2,87 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>ЯТопология</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=1200">
+    <title>Яндекс Топология</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="header">
-        <div class="header-left">
-            <img src="{{ url_for('static', filename='images/yandex_icon.svg.png') }}" alt="Я" class="yandex-logo">
-            <span class="header-title">Топология</span>
+    <header class="header">
+        <div class="header__logo">
+            <img src="{{ url_for('static', filename='images/ya.svg') }}" alt="Яндекс Топология" height="32">
+            <span>Топология</span>
         </div>
-        <div class="header-right">
-            <div class="user-icon">
-                <svg width="20" height="20" fill="none" stroke="#888" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M4 20c0-4  8-4 8-4s8 0 8 4"/>
-                </svg>
+        <nav class="header__nav">
+            <a href="#about">О проекте</a>
+            <a href="#team">Команда</a>
+            <a href="#start">Начать пользоваться</a>
+        </nav>
+        <div class="header__user">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="12" r="6" fill="#E0E0E0"/><rect x="6" y="22" width="20" height="8" rx="4" fill="#E0E0E0"/></svg>
+            <button class="header__login" onclick="window.location.href='/login'">Войти</button>
+        </div>
+    </header>
+    <main>
+        <section class="hero">
+            <div class="hero__text">
+                <h1><b>Яндекс Топология</b> - сервис для проектирования топологии логистических систем и оптимизации складов</h1>
+                <button class="btn btn-yellow" onclick="window.location.href='/login'">Начать пользоваться</button>
             </div>
-            <button class="logout-btn" id="logoutBtn">Выйти</button>
+            <div class="hero__img">
+                <img src="{{ url_for('static', filename='images/new.png') }}" alt="Скриншот ноутбука">
+            </div>
+        </section>
+    <section class="features">
+        <h2>Функции</h2>
+        <div class="features__list">
+            <div class="feature">
+                <h3>Распознавание складов</h3>
+                <p>С помощью использования технологии машинного зрения происходит распознавание склада с плана здания</p>
+            </div>
+            <div class="feature">
+                <h3>Автоматическая расстановка</h3>
+                <p>Данное ПО позволяет автоматически расставлять стеллажи</p>
+            </div>
+            <div class="feature">
+                <h3>Визуализация</h3>
+                <p>Удобная визуализация и личный кабинет</p>
+            </div>
         </div>
-    </div>
-    <div class="main-content">
-        <div class="recent-projects-block">
-            <span class="recent-title">Недавние проекты:</span>
-            <button class="new-btn" onclick="window.location.href='/file'">Новый</button>
+    </section>
+
+    <section class="team" id="team">
+        <h2>Команда проекта</h2>
+        <div class="team__list">
+            <div class="team__member"></div>
+            <div class="team__member"></div>
+            <div class="team__member"></div>
+            <div class="team__member"></div>
+            <div class="team__member"></div>
+            <div class="team__member"></div>
+            <div class="team__member"></div>
+            <div class="team__member"></div>
         </div>
-    </div>
-    <script src="{{ url_for('static', filename='index.js') }}"></script>
+    </section>
+    <section class="start" id="start">
+        <h2>Начать пользоваться</h2>
+        <div class="start__block">
+            <div class="start__img">
+                <img src="{{ url_for('static', filename='images/new2.png') }}" alt="Скриншот ноутбука 2">
+            </div>
+            <div class="start__text">
+                <h3><b>Яндекс Топология</b> - Простой и удобный сервис для проектирования топологии логистических систем и оптимизации складов.</h3>
+                <button class="btn btn-yellow" onclick="window.location.href='/login'">Начать пользоваться</button>
+            </div>
+        </div>
+    </section>
+    </main>
+    <footer class="footer">
+        <div class="footer__logo">
+            <img src="{{ url_for('static', filename='ya.svg') }}" alt="Яндекс Топология" height="32">
+            <span>Топология</span>
+        </div>
+        <p class="footer__center">Яндекс Топология 2025</p>
+        <p class="footer__right">frogeesoft.team@gmail.com</p>
+    </footer>
 </body>
-</html>
+</html> 
