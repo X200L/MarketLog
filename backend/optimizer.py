@@ -11,6 +11,12 @@ from matrix_to_json import matrix_to_json
 from score_function import score_function
 
 
+def save_map_txt(matrix, path):
+    with open(path, 'w', encoding='utf-8') as f:
+        for row in matrix:
+            f.write(' '.join(str(cell) for cell in row) + '\n')
+
+
 def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
               pallet_weight=1, temp_upload_folder=None, user_dir=None):
     size, width_line = graphic_data
@@ -233,6 +239,11 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
         matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
         pal, mid_len = score_function(matrix, operation_zone, os.path.join(heatmaps_dir, f'heatmap{way}.png'))
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
+        # Сохраняем матрицу для симуляции
+        if user_dir is not None:
+            maps_dir = os.path.join(user_dir, 'maps')
+            os.makedirs(maps_dir, exist_ok=True)
+            save_map_txt(matrix, os.path.join(maps_dir, f'topology{way}.txt'))
 
     for way in range(3, 6):
         s = 0
@@ -429,3 +440,8 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
         matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
         pal, mid_len = score_function(matrix, operation_zone, os.path.join(heatmaps_dir, f'heatmap{way}.png'))
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
+        # Сохраняем матрицу для симуляции
+        if user_dir is not None:
+            maps_dir = os.path.join(user_dir, 'maps')
+            os.makedirs(maps_dir, exist_ok=True)
+            save_map_txt(matrix, os.path.join(maps_dir, f'topology{way}.txt'))

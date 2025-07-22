@@ -1,3 +1,5 @@
+window.lcImages = JSON.parse(document.getElementById('lcImagesData').textContent);
+window.lcHeatmaps = JSON.parse(document.getElementById('lcHeatmapsData').textContent);
 document.addEventListener('DOMContentLoaded', function() {
     const uploadForm = document.getElementById('uploadForm');
     let uploadedFileName = null; // Переменная для хранения имени загруженного файла
