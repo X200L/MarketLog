@@ -34,7 +34,24 @@ def landing():
 def lc():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template('lc.html')
+    username = session['username']
+    user_dir = os.path.join('user_data', username)
+    temp_uploads = os.path.join(user_dir, 'temp_uploads')
+    heatmaps = os.path.join(user_dir, 'heatmaps')
+    images = []
+    heatmap_images = []
+    for i in range(6):
+        img_path = f'/user_data/{username}/temp_uploads/warehouse_roads{i}.png'
+        heatmap_path = f'/user_data/{username}/heatmaps/heatmap{i}.png'
+        if os.path.exists(os.path.join(temp_uploads, f'warehouse_roads{i}.png')):
+            images.append(img_path)
+        else:
+            images.append(None)
+        if os.path.exists(os.path.join(heatmaps, f'heatmap{i}.png')):
+            heatmap_images.append(heatmap_path)
+        else:
+            heatmap_images.append(None)
+    return render_template('lc.html', images=images, heatmaps=heatmap_images)
 
 
 @app.route('/upload', methods=['POST'])
