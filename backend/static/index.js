@@ -1,65 +1,84 @@
+// Плавный скролл
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('burgerBtn').classList.remove('active');
+  document.getElementById('burgerBtn').setAttribute('aria-expanded', 'false');
+  document.getElementById('mobileMenu').setAttribute('aria-hidden', 'true');
+  document.getElementById('mobileMenuBackdrop').style.display = 'none';
+}
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    const menu = document.getElementById('mobileMenu');
+    if (window.innerWidth <= 600 && menu.classList.contains('open')) {
+      closeMobileMenu();
+    }
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+});
+// Анимация появления блоков
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('show');
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.feature, .advantage, .team__member, .review, .faq__item, .start__block').forEach(el => {
+  observer.observe(el);
+});
+// Мобильное меню
+const burgerBtn = document.getElementById('burgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+burgerBtn.addEventListener('click', function() {
+  const isOpen = mobileMenu.classList.toggle('open');
+  burgerBtn.classList.toggle('active', isOpen);
+  burgerBtn.setAttribute('aria-expanded', isOpen);
+  mobileMenu.setAttribute('aria-hidden', !isOpen);
+  mobileMenuBackdrop.style.display = isOpen ? 'block' : 'none';
+});
+mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+window.addEventListener('resize', function() {
+  if(window.innerWidth > 600) {
+    closeMobileMenu();
+  }
+});
+// Закрытие меню свайпом вверх (для UX)
+let touchStartY = null;
+mobileMenu.addEventListener('touchstart', function(e) {
+  if (e.touches.length === 1) touchStartY = e.touches[0].clientY;
+});
+mobileMenu.addEventListener('touchmove', function(e) {
+  if (touchStartY !== null && e.touches.length === 1) {
+    const deltaY = e.touches[0].clientY - touchStartY;
+    if (deltaY < -60) {
+      closeMobileMenu();
+      touchStartY = null;
+    }
+  }
+});
 document.addEventListener('DOMContentLoaded', function() {
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function() {
-            window.location.href = '/logout';
-        });
+  // Кнопки 'Начать пользоваться' на лендинге
+  document.querySelectorAll('.btn.btn-yellow').forEach(btn => {
+    if (btn.textContent.includes('Начать пользоваться')) {
+      btn.addEventListener('click', function() {
+        window.location.href = '/login';
+      });
     }
+  });
 
-    // Только для страницы с сеткой топологий
-    const topologyGrid = document.querySelector('.topology-grid');
-    if (!topologyGrid) return;
-    // Получаем данные из data-атрибутов, если нужно, или из глобальных переменных, если шаблон их оставляет
-    let images = window.lcImages || [];
-    let heatmaps = window.lcHeatmaps || [];
-    // Если переменных нет, пробуем собрать из DOM
-    if (!images.length) {
-        images = Array.from(document.querySelectorAll('.topology-grid-item img')).map(img => img.getAttribute('src'));
-    }
-    // Для heatmaps нужен серверный рендеринг, иначе оставить пустым
-    // Навешиваем обработчики
-    const gridImages = document.querySelectorAll('.topology-grid-item img');
-    gridImages.forEach(function(imgEl) {
-        imgEl.addEventListener('click', function() {
-            const idx = imgEl.getAttribute('data-idx');
-            openImageModal(images[idx], heatmaps[idx], idx);
-        });
+  // FAQ accordion
+  document.querySelectorAll('.faq__question').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const item = btn.closest('.faq__item');
+      const answer = item.querySelector('.faq__answer');
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', !expanded);
+      item.classList.toggle('open', !expanded);
     });
-    function openImageModal(imgSrc, heatmapSrc, idx) {
-        const modal = document.getElementById('imageModal');
-        const mainImg = document.getElementById('modalMainImg');
-        const heatmapImg = document.getElementById('modalHeatmapImg');
-        const downloadJsonBtn = document.getElementById('downloadJsonBtn');
-        const runSimulationBtn = document.getElementById('runSimulationBtn');
-        if (modal && mainImg && heatmapImg && downloadJsonBtn && runSimulationBtn) {
-            mainImg.src = imgSrc;
-            heatmapImg.src = heatmapSrc;
-            let jsonPath = '';
-            if (heatmapSrc && heatmapSrc.includes('heatmaps/heatmap')) {
-                jsonPath = heatmapSrc.replace('heatmaps/heatmap', 'graph/graph').replace('.png', '.json');
-            } else {
-                jsonPath = `graph/graph${idx}.json`;
-            }
-            downloadJsonBtn.href = jsonPath;
-            downloadJsonBtn.setAttribute('download', `graph${idx}.json`);
-            runSimulationBtn.onclick = function() {
-                // Здесь должна быть логика запуска симуляции
-            };
-            modal.style.display = 'flex';
-        }
-    }
-    const closeModalBtn = document.getElementById('closeModal');
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', function() {
-            document.getElementById('imageModal').style.display = 'none';
-        });
-    }
-    const imageModal = document.getElementById('imageModal');
-    if (imageModal) {
-        imageModal.addEventListener('click', function(e) {
-            if (e.target === imageModal) {
-                imageModal.style.display = 'none';
-            }
-        });
-    }
+  });
 });

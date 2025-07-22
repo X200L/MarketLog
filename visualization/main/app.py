@@ -3,6 +3,8 @@ import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+
+mpl.use('Agg')
 from matplotlib import colors
 from matplotlib.patches import Circle, Rectangle
 from flask import Flask, render_template, jsonify
@@ -239,7 +241,7 @@ def get_frame(frame_index):
 
 if __name__ == '__main__':
     try:
-        app.run(debug=True, threaded=True)
+        app.run(debug=True, threaded=True, port=5001)
     finally:
         if file_processor:
             file_processor.stop()
