@@ -12,10 +12,18 @@ from score_function import score_function
 
 
 def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
-              pallet_weight=1, temp_upload_folder=None):
+              pallet_weight=1, temp_upload_folder=None, user_dir=None):
     size, width_line = graphic_data
     if temp_upload_folder is None:
         temp_upload_folder = '../tmp_photo'
+    if user_dir is not None:
+        graph_dir = os.path.join(user_dir, 'graph')
+        heatmaps_dir = os.path.join(user_dir, 'heatmaps')
+    else:
+        graph_dir = os.path.join(os.path.dirname(__file__), 'graph')
+        heatmaps_dir = os.path.join('backend', 'heatmaps')
+    os.makedirs(graph_dir, exist_ok=True)
+    os.makedirs(heatmaps_dir, exist_ok=True)
 
     vertex = []
     operation_zone = (0, 0)
@@ -201,12 +209,29 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       map(lambda c: ((c[0]) * size, (c[1]) * size),
                           chk), size,
                       width_line=width_line,
-                      color=(155, 25, 155))
+                      color=(0, 255, 0))
+        walls = set()
+        empty = set()
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    empty.add((i, j))
 
-        graph_dir = os.path.join(os.path.dirname(__file__), 'graph')
-        os.makedirs(graph_dir, exist_ok=True)
+                if matrix[i][j] in {-3, -2}:
+                    walls.add((i, j))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          empty), size, width_line=width_line,
+                      color=(255, 255, 255))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          walls), size, width_line=width_line,
+                      color=(255, 0, 0))
+
         matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
-        pal, mid_len = score_function(matrix, operation_zone, os.path.join('backend', 'heatmaps', f'heatmap{way}.png'))
+        pal, mid_len = score_function(matrix, operation_zone, os.path.join(heatmaps_dir, f'heatmap{way}.png'))
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
 
     for way in range(3, 6):
@@ -379,10 +404,28 @@ def optimizer(matrix, graphic_data, road_step=None, charging=0, road_weight=1,
                       map(lambda c: ((c[0]) * size, (c[1]) * size),
                           chk), size,
                       width_line=width_line,
-                      color=(155, 25, 155))
+                      color=(0, 255, 0))
+        
+        walls = set()
+        empty = set()
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    empty.add((i, j))
 
-        graph_dir = os.path.join(os.path.dirname(__file__), 'graph')
-        os.makedirs(graph_dir, exist_ok=True)
+                if matrix[i][j] in {-3, -2}:
+                    walls.add((i, j))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          empty), size, width_line=width_line,
+                      color=(255, 255, 255))
+
+        coloring_cell(os.path.join(temp_upload_folder, f'warehouse_roads{way}.png'),
+                      map(lambda c: (c[1] * size, c[0] * size),
+                          walls), size, width_line=width_line,
+                      color=(255, 0, 0))
+
         matrix_to_json(matrix, os.path.join(graph_dir, f'graph{way}.json'))
-        pal, mid_len = score_function(matrix, operation_zone, os.path.join('backend', 'heatmaps', f'heatmap{way}.png'))
+        pal, mid_len = score_function(matrix, operation_zone, os.path.join(heatmaps_dir, f'heatmap{way}.png'))
         print(f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа\n")
