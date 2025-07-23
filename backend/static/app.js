@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         sidebar.innerHTML = `
                             <div class="logotip">
 
-                                <a href="templates/index.html"><img src="static/images/yandex_icon.svg.png" class="logo"></a>
+                                <a href="templates/index.html"><img src="static/images/ya.svg" class="logo"></a>
                                 <span class="title">Топология</span>
                             </div>
                             <div class="zones file-section">
