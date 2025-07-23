@@ -12,21 +12,25 @@ def dijkstra (startin, graph):
     unvisited = list(graph.keys())
     for node in graph:
         dist[node] = float('inf')
+        neighbours[node]=[]
     dist[start] = 0.0
     for i in range(0, len(unvisited)):
-        closest = '0:0'
+        closest = '0:0' #всегда является стеной, соответственно расстояние всегда бесконечно
         for node in unvisited:
-            if dist[node] < dist[closest]:
+            if dist[node] < dist[closest]:  #Ищем непосещенную вершину с наименьшим расстоянием
                 closest = node
-        if dist[closest] == float('inf'):
+        if dist[closest] == float('inf'):   #Если расстояние до ближайшей вершины бесконечно, значит проход заблокирован со всех сторон, завершаемся с ошибкой
             return dist, neighbours
-        unvisited.pop(unvisited.index(closest))
+        unvisited.pop(unvisited.index(closest)) #Сразу удаляем вершину из непосещенных и добавляем в посещенные
         visited.append(closest)
-        for node in graph[closest]:
-            if node in unvisited:
+        for node in graph[closest]: #Берем вершину из соседей текущей
+            #if node in unvisited:   
                 if dist[node]> dist[closest]+1:
                     dist[node] = dist[closest]+1
-                    neighbours[node] = closest
+                    neighbours[node].insert(0, closest)
+                #print(neighbours[node])
+                else:
+                    neighbours[node].append(closest)
     return dist, neighbours
         
 

@@ -2,7 +2,7 @@ import usr_lib.readmaptxt as maptxt
 import usr_lib.objects as obj
 import usr_lib.singleagentplanner as agent
 import random
-def shit(ticks, q):
+def shit(ticks, q, path):
     out = open('out.txt', 'w', encoding='utf-8')
     log = open('log.txt', 'w', encoding='utf-8')
     s = []
@@ -11,7 +11,7 @@ def shit(ticks, q):
     collision = 0
     pathmap = []
     dist = 0
-    maprix, start = maptxt.readtxtmap()
+    maprix, start = maptxt.readtxtmap(path)
     startcords = agent.startcords(maprix)
     amount = len(startcords)-q
     ozon = obj.opzone(start[0], start[1])
@@ -145,12 +145,13 @@ def shit(ticks, q):
                             print('collision type 3 detected at node '+str(r[i].path[j])+' between '+str(i)+' and '+str(d))
                         previousnodes = [r[i].path[j], r[d].path[j]]"""
         if collision == 0:
+            print(amount)
             for i in range(0, amount):
                 if s[r[i].task].state == 2 or s[r[i].task].state == 3:
                     maprix = r[i].move(r[i].path[-1], maprix, 'S')
-                    print(r[i].trycords)
-                    print(s[r[i].task].state)
-                    print(r[i].task)
+                    #print(r[i].trycords)
+                    #print(s[r[i].task].state)
+                    #print(r[i].task)
                     if r[i].below == 'S' or r[i].below == 'R':
                         if r[i].trycords == start:
                             r[i].below = '%'
@@ -158,9 +159,9 @@ def shit(ticks, q):
                             r[i].below = '0'
                 else:
                     maprix = r[i].move(r[i].path[-1], maprix, 'R')
-                    print(r[i].cords)
-                    print(s[r[i].task].state)
-                    print(r[i].task)
+                    #print(r[i].cords)
+                    #print(s[r[i].task].state)
+                    #print(r[i].task)
                     if r[i].below == 'S' or r[i].below == 'R':
                         if r[i].trycords == start:
                             r[i].below = '%'
@@ -178,3 +179,8 @@ def shit(ticks, q):
             print(m)
             break
     return 'success'
+u = 'error'
+q = 0
+while u == 'error':
+    u = shit(10,q, "../main/usr_lib/map.txt")
+    q+=1
