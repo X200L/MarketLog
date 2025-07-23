@@ -36,16 +36,19 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload_file():
     try:
+        if 'user_id' not in session or 'username' not in session:
+            return jsonify({'error': 'Not authenticated'}), 401
+        username = session['username']
+        user_dir = os.path.join('user_data', username)
+        upload_folder = os.path.join(user_dir, 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
         if 'file' not in request.files:
             return jsonify({'error': 'No file part'}), 400
-
         file = request.files['file']
         if file.filename == '':
             return jsonify({'error': 'No selected file'}), 400
-
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        file.save(os.path.join(upload_folder, file.filename))
         return jsonify({'message': 'File uploaded successfully'})
-
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -58,6 +61,14 @@ def file_page():
 @app.route('/build-grid', methods=['POST'])
 def build_grid():
     try:
+        if 'user_id' not in session or 'username' not in session:
+            return jsonify({'error': 'Not authenticated'}), 401
+        username = session['username']
+        user_dir = os.path.join('user_data', username)
+        upload_folder = os.path.join(user_dir, 'uploads')
+        temp_upload_folder = os.path.join(user_dir, 'temp_uploads')
+        heatmaps_folder = os.path.join(user_dir, 'heatmaps')
+        graph_folder = os.path.join(user_dir, 'graph')
         data = request.get_json()
         if not data or 'filename' not in data:
             return jsonify({'error': 'No filename provided'}), 400
@@ -65,17 +76,17 @@ def build_grid():
         operation_zone_x = int(data.get('operation_zone_x', 350))
         operation_zone_y = int(data.get('operation_zone_y', 150))
         robot_size = int(data.get('robot_size', 30))
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
- 
-        processor = ImageProcessor(app.config['UPLOAD_FOLDER'])
+        image_path = os.path.join(upload_folder, filename)
+        processor = ImageProcessor(upload_folder)
         processed_filename = processor.process_file(filename)
-        processed_path = os.path.join(app.config['UPLOAD_FOLDER'], processed_filename)
-        
-        starter(processed_path, operation_zone_x, operation_zone_y, robot_size, temp_upload_folder=app.config['TEMP_UPLOAD_FOLDER'])
-        images = [f'/temp_uploads/warehouse_roads{i}.png' for i in range(6)]
+        processed_path = os.path.join(upload_folder, processed_filename)
+        starter(processed_path, operation_zone_x, operation_zone_y, robot_size, temp_upload_folder=temp_upload_folder, user_dir=user_dir)
+        images = [f'/user_data/{username}/temp_uploads/warehouse_roads{i}.png' for i in range(6)]
+        heatmaps = [f'/user_data/{username}/heatmaps/heatmap{i}.png' for i in range(6)]
         return jsonify({
             'message': 'Grid built successfully',
-            'images': images
+            'images': images,
+            'heatmaps': heatmaps
         })
     except FileNotFoundError as e:
         return jsonify({'error': f'File not found: {str(e)}'}), 404
@@ -100,6 +111,11 @@ def heatmap_file(filename):
     abs_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'heatmaps'))
     return send_from_directory(abs_path, filename)
 
+@app.route('/user_data/<username>/<folder>/<filename>')
+def user_file(username, folder, filename):
+    abs_path = os.path.abspath(os.path.join('user_data', username, folder))
+    return send_from_directory(abs_path, filename)
+
 
 def create_user(username, password):
     hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
@@ -108,6 +124,12 @@ def create_user(username, password):
     c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
     conn.commit()
     conn.close()
+    # Создание пользовательских папок
+    user_dir = os.path.join('user_data', username)
+    os.makedirs(os.path.join(user_dir, 'uploads'), exist_ok=True)
+    os.makedirs(os.path.join(user_dir, 'temp_uploads'), exist_ok=True)
+    os.makedirs(os.path.join(user_dir, 'heatmaps'), exist_ok=True)
+    os.makedirs(os.path.join(user_dir, 'graph'), exist_ok=True)
 
 def get_db_connection():
     conn = sqlite3.connect('database.db')
@@ -152,6 +174,7 @@ def login():
             conn.close()
             if user and user['password'] == hashed_password:
                 session['user_id'] = user['id']
+                session['username'] = user['username']
                 return redirect(url_for('index'))
             else:
                 error = 'Неправильное имя пользователя или пароль'
