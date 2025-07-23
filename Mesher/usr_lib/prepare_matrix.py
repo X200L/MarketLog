@@ -7,14 +7,19 @@ from Mesher.usr_lib.create_graph import create_graph
 
 
 def prepare_matrix(matrix):
+    """Функция обработки случая, когда на вход программе подаётся матрица"""
+
+    # добавляем рамку из препятствий к матрице
     matrix = np.array(matrix)
     matrix = np.pad(matrix, pad_width=2, constant_values=-3)
 
+    # создаём схему помещения
     size = 30
     width_line = 1
     new_image = Image.new('RGB', ((len(matrix[0]) * size),
                                   (len(matrix) * size)), color=(255, 0, 0))
 
+    # ищем рабочую зону робота и операционные зоны
     vertex = set()
     oz = []
     for i in range(len(matrix)):
@@ -25,12 +30,17 @@ def prepare_matrix(matrix):
             if matrix[i][j] == -1:
                 oz.append((i, j))
 
+    # граф рабочей зоны роботов
     graph = create_graph(vertex, (oz[0]))
     for e in oz:
         if e not in graph:
+            """обработка ошибки, когда операционная зона находится в
+             препятствии или изолирована"""
+
             print("Операционные зоны находятся в разных компонентах связности!")
             sys.exit()
 
+    # создаём изображение с сеткой
     new_image = np.array(new_image)
     for ky in range(len(matrix)):
         for kx in range(0, len(matrix[0])):
@@ -45,6 +55,7 @@ def prepare_matrix(matrix):
     (Image.fromarray(new_image, 'RGB').
      save('../tmp_photo/coloring_warehouse.png'))
 
+    # рисуем сетку
     image = Image.open('../tmp_photo/coloring_warehouse.png')
     draw = ImageDraw.Draw(image)
 
@@ -64,11 +75,13 @@ def prepare_matrix(matrix):
                    for operation_zone_y, operation_zone_x in oz],
                   size, color=(0, 100, 100), width_line=width_line)
 
+    # создаём копии изображений для создания вариантов топологии поверх них
     img_copy = Image.open('../tmp_photo/warehouse_meshed.png')
     for i in range(0, 6):
         img_copy.save(f'../tmp_photo/warehouse_roads{i}.png')
     img_copy.close()
 
+    # возвращаем матрицу и графические параметры
     return matrix, size, width_line
 
 

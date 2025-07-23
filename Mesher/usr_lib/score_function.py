@@ -7,6 +7,9 @@ from Mesher.usr_lib.dist_on_road import dist_on_road
 
 
 def score_function(matrix, operation_zones, path=None):
+    """Функция для получения метрик оценки топологии склада и
+     составления heatmap"""
+
     counter = 0
     charg = 0
     score_matrix = np.array(
@@ -18,9 +21,11 @@ def score_function(matrix, operation_zones, path=None):
 
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
+            # считаем зарядки
             if matrix[i][j] == 3:
                 charg += 1
 
+            # считаем стеллажи и расстояние до них
             if matrix[i][j] == 1:
                 counter += 1
 
@@ -28,6 +33,7 @@ def score_function(matrix, operation_zones, path=None):
 
                 all_len += dst[(i, j)] + 1
 
+    # сстроим heatmap
     if path is not None:
         plt.figure()
         plt.title(f"Heatmap топологии склада", fontsize=14)
@@ -41,6 +47,7 @@ def score_function(matrix, operation_zones, path=None):
                              xticklabels=False, yticklabels=False, vmin=0,
                              vmax=0)
 
+        # выделяем посторонние объекты
         for i in range(len(matrix)):
             for j in range(len(matrix[i])):
                 if matrix[i][j] == -1:
@@ -73,15 +80,27 @@ def score_function(matrix, operation_zones, path=None):
                                            facecolor=(255 / 255, 255 / 255,
                                                       255 / 255)))
 
-    try:
-        plt.suptitle(f"{counter} - стеллажей; {round(all_len / counter, 3)} - среднее растояние до стеллажа; {charg} - зарядок", y=0.07, fontsize=8)
-        return counter, all_len / counter, charg
+        # считаем метрики топологии
+        try:
+            plt.suptitle(f"{counter} - стеллажей; {round(all_len / counter, 3)} - среднее растояние до стеллажа; {charg} - зарядок", y=0.07, fontsize=8)
+            return counter, all_len / counter, charg
 
-    except ZeroDivisionError:
-        return 0, float('inf'), charg
+        # обработка ошибки, если в топологии нет ни одного стеллажа
+        except ZeroDivisionError:
+            return 0, float('inf'), charg
 
-    finally:
-        plt.savefig(path, dpi=300)
+        # сохраняем heatmap
+        finally:
+            plt.savefig(path, dpi=300)
+
+    # если путь сохранения файла не указан
+    else:
+        try:
+            return counter, all_len / counter, charg
+
+        # обработка ошибки, если в топологии нет ни одного стеллажа
+        except ZeroDivisionError:
+            return 0, float('inf'), charg
 
 
 if __name__ == "__main__":

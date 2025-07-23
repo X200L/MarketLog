@@ -5,7 +5,10 @@ from PIL import Image
 
 def coloring_cell(file_path_in, cords, size, color, width_line=0,
                   file_path_out=None):
-    """функция для раскраски указанной ячейки сетки изображения"""
+    """функция для раскраски указанной ячейки сетки изображения;
+    Указываются (x, y) верхнего нижнего угла ячейки, её размер в пикселях, цвет
+    и ширину существующей сетки на изображении"""
+
     if file_path_out is None:
         file_path_out = file_path_in
 

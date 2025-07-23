@@ -13,10 +13,12 @@ def mesh_function(image_path, operation_zones,
     # функция для разбиения схемы склада рабочие области
 
     """функция возвращает изменённую фотографию и
-    список абсолютных координат рабочих областей"""
+    параметры графического представления (размер ячеек и толщину линий
+     сетки в пикселях)"""
 
     image = Image.open(image_path)
 
+    # отступы сетки, чтобы угол операционной зоны попадал в её вершину
     operation_zone_x, operation_zone_y = operation_zones[0]
     offset_x = operation_zone_x % size
     offset_y = operation_zone_y % size
@@ -25,6 +27,9 @@ def mesh_function(image_path, operation_zones,
         operation_zone_x2, operation_zone_y2 = i
         if (offset_x != operation_zone_x2 % size or offset_y !=
                 operation_zone_y2 % size):
+
+            """обработка ошибки, когда операционные зоны имеют разные
+             отступы по сетке"""
             print("Операционные зоны не связаны сеткой!")
             sys.exit()
 
@@ -37,6 +42,7 @@ def mesh_function(image_path, operation_zones,
     offset_x += size
     offset_y += size
 
+    # добавляем рамку к изображению
     add_borders(image_path, '../tmp_photo/bordered_image.png',
                 left, right, top, bottom, size)
 
@@ -53,6 +59,7 @@ def mesh_function(image_path, operation_zones,
     vertex = []
     wall_vertex = []
 
+    # раскрашиваем каждую ячейку в нужны цвет
     for ky in range(0, cell_top + 1):
         for kx in range(0, cell_width + 1):
             cell_middle_color = np.array([0, 0])
@@ -79,6 +86,9 @@ def mesh_function(image_path, operation_zones,
     for operation_zone_x, operation_zone_y in operation_zones:
         if ((operation_zone_x + left) // size,
                 (operation_zone_y + top) // size) not in graph:
+
+            """обработка ошибки, когда операционная зона находится в
+                        препятствии или изолирована"""
             print("Операционные зоны находятся в разных компонентах связности!")
             sys.exit()
 
@@ -137,11 +147,13 @@ def mesh_function(image_path, operation_zones,
         ozx_cell = (operation_zone_x + left) // size - 1
         matrix_const[ozy_cell][ozx_cell] = -1
 
+    # создаём копии изображений для создания вариантов топологии поверх них
     img_copy = Image.open('../tmp_photo/warehouse_meshed.png')
     for i in range(0, 6):
         img_copy.save(f'../tmp_photo/warehouse_roads{i}.png')
     img_copy.close()
 
+    # возвращаем матрицу и графические параметры
     return matrix_const, size, width_line
 
 

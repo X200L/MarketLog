@@ -1,14 +1,23 @@
 def get_await_zone(x, y, dx, dy, priority='h'):
+    """Функция получения координат возможных зон ожидания;
+    Функция возвращает координаты 8-ми прямоугольников в матрице, котрые
+     должны быть зарезервированы в топологии под потребности логистики;
+     Есть возможность указать приоритетную ориентацию прямоугольников
+     (вертикальную/горизрнтальную), они будут первыми в выходных данных"""
+
     m = []
-    if priority == 'v':
+
+    # создаём список матриц размерности, согласной приоритетной ориентации
+    if priority == 'h':
         m = [[[(y, x) for _ in range(dy)] for _ in range(dx)] for _ in range(4)]
         m.extend([[[(x, y) for _ in range(dx)] for _ in range(dy)] for _ in
                   range(4)])
-    elif priority == 'h':
+    elif priority == 'v':
         m = [[[(x, y) for _ in range(dx)] for _ in range(dy)] for _ in range(4)]
         m.extend([[[(y, x) for _ in range(dy)] for _ in range(dx)] for _ in
                   range(4)])
 
+    # заполняем матрицы координатами ячеек
     for i in range(len(m[0])):
         for j in range(len(m[0][0])):
             m[0][i][j] = (y - i, x + j)
@@ -23,6 +32,7 @@ def get_await_zone(x, y, dx, dy, priority='h'):
             m[6][i][j] = (y + i, x + j)
             m[7][i][j] = (y + i, x - j)
 
+    # переводим матрицы в список координат
     res = []
     for i in m:
         res.append([])

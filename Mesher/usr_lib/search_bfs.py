@@ -22,9 +22,11 @@ def search_bfs(graph, start, flag=False):
                 dq.append(i)
                 dst[i] = dst[v] + 1
 
+    # если нужно считать растояние, возвращаем его
     if flag:
         return dst
 
+    # возвращаем достежимые вершины
     return visited
 
 

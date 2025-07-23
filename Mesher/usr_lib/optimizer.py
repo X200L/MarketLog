@@ -15,11 +15,26 @@ from Mesher.usr_lib.get_await_zone import get_await_zone
 def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
               charging=0, road_weight=1, pallet_weight=1,
               await_zone_size=(2, 2), priority_vec_az=('h', 'v')):
+    """Функция, выполняющаяя создание топологии
+    На вход подаётся матрица и графические параметры.
+    Шаг дорог позволяет затавать максимальную длину галлереи стеллажей;
+    charging_flag позволяет размещать зарядки с доступами под стеллажами,
+     если значение истинно;
+    Количество зарядок устанавливает целевое число зарядок,
+     которое алгоритм будет пытаться размесить;
+    Вес дорог и паллетов устанавливает значение весов рёбер проходящих
+     через эти объекты, при соединении дорог;
+    await_zone_size устанавливает размеры зоны ожидания
+    priority_vec_az устанавливает приоритет вертикального или
+     горизонатеьлного расположения зоны ожидания
+    """
+
     size, width_line = graphic_data
 
     vertex = []
     operation_zones = []
 
+    # ищем операционные зоны и свободные клетки
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
             if matrix[i][j] == -1:
@@ -31,11 +46,13 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
     graph = create_graph(vertex, operation_zones[0])
     matrix_const = copy.deepcopy(matrix)
 
+    # перебираем случаи горизнательного расположенных начальных дорог
     for way in range(0, 3):
         s = 0
         roads = []
         pallets = []
 
+        # проводим горизонтальные дороги
         for i in range(way + 1, len(matrix_const) - 1, 3):
             for j in range(1, len(matrix_const[0]) - 1):
                 if matrix_const[i][j] in {-1, 0}:
@@ -84,6 +101,7 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                 roads_list[i][j] = (roads_list[i][j][1] +
                                     1, roads_list[i][j][0] + 1)
 
+        # соединяем дороги
         new_road = set()
         while len(roads_list) > 1:
             if road_step[0] is not None:
@@ -95,32 +113,36 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                 my_range = [roads_list[1][0], roads_list[1][-1]]
 
             finish = roads_list[0]
-
-            for e in [route_builder(graph, start, finish) for start
+            for e in [route_builder(matrix, start, finish,
+                                    road_weight=road_weight,
+                                    pallet_weight=pallet_weight) for start
                       in my_range]:
                 for i in e:
-                    if matrix[i[1] - 1][i[0] - 1] not in {-3, -2}:
+                    if matrix[i[0]][i[1]] not in {-3, -2}:
                         new_road.add(i)
 
             roads_list[0].extend(roads_list.pop(1))
 
+        # соединяем операционные зоны с дорогами
         for i in operation_zones:
-            for j in route_builder(graph, i, roads_list[0]):
-                if matrix[j[1] - 1][j[0] - 1] in {0, 1}:
-                    matrix[j[1] - 1][j[0] - 1] = 4
+            for j in route_builder(matrix, i, roads_list[0],
+                                   road_weight=road_weight,
+                                   pallet_weight=pallet_weight):
+                if matrix[j[0]][j[1]] in {0, 1}:
                     new_road.add(j)
 
         for i in new_road:
-            matrix[i[1] - 1][i[0] - 1] = 4
+            matrix[i[0]][i[1]] = 4
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
-                      map(lambda c: ((c[0] - 1) * size, (c[1] - 1) * size),
+                      map(lambda c: ((c[1]) * size, (c[0]) * size),
                           new_road), size, width_line=width_line,
                       color=(100, 100, 100))
 
         for i in operation_zones:
             matrix[i[1] - 1][i[0] - 1] = -1
 
+        # размещаем зоны ожидания
         await_zone = []
         for i in operation_zones:
             flag = False
@@ -148,6 +170,7 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                 print(
                     f"Не удаётся разместить зону ожидания {i}, вариант: {way}")
 
+        # расставляем недостающие стеллажи
         new_pallets = set()
 
         for i in range(len(matrix)):
@@ -165,16 +188,16 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                           new_pallets), size, width_line=width_line,
                       color=(255, 255, 0))
 
+        # соединяем операционные хоны с зонами ожидания
         new_road = set()
-
         for i in zip(operation_zones, await_zone):
-            for j in route_builder(graph, i[0], i[1]):
-                if matrix[j[1] - 1][j[0] - 1] not in {-3, -2, -1, 2}:
-                    matrix[j[1] - 1][j[0] - 1] = 4
+            for j in route_builder(matrix, i[0], i[1], road_weight=road_weight,
+                                   pallet_weight=pallet_weight):
+                if matrix[j[0]][j[1]] not in {-3, -2, -1, 2}:
                     new_road.add(j)
 
         for i in new_road:
-            matrix[i[1] - 1][i[0] - 1] = 4
+            matrix[i[0]][i[1]] = 4
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: ((c[0] - 1) * size, (c[1] - 1) * size),
@@ -187,6 +210,7 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                       size, color=(0, 100, 100),
                       width_line=width_line)
 
+        # размещаем зарядки
         awz = []
         for i in await_zone:
             for j in i:
@@ -249,6 +273,7 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                       width_line=width_line,
                       color=(0, 255, 0))
 
+        # редактируем изображение
         walls = set()
         empty = set()
         for i in range(len(matrix)):
@@ -269,17 +294,20 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                           walls), size, width_line=width_line,
                       color=(255, 0, 0))
 
+        # выводим метрики, создаём heatmap и json
         matrix_to_json(matrix, f'../graph/graph{way}.json')
         pal, mid_len, charg = score_function(matrix, operation_zones,
                                              f'../heatmaps/heatmap{way}.png')
         print(
             f"Вариант №{way}: {pal} - стеллажей, {mid_len} - среднее растояние до стеллажа, {charg} - зарядок")
 
+    # пеоебираем случаи вертикальных дорог
     for way in range(3, 6):
         s = 0
         roads = []
         pallets = []
 
+        # проводим вертикальные дороги
         for i in range(1, len(matrix_const) - 1):
             for j in range((way + 1) % 3, len(matrix_const[0]) - 1, 3):
                 if matrix_const[i][j] == 0:
@@ -328,43 +356,48 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                 roads_list[i][j] = (roads_list[i][j][1] +
                                     1, roads_list[i][j][0] + 1)
 
+        # соединяем дороги
         new_road = set()
         while len(roads_list) > 1:
-            if road_step[-1] is not None:
+            if road_step[0] is not None:
                 my_range = [roads_list[1][-1]]
-                for s in range(0, len(roads_list[1]), road_step[-1] + 1):
+                for s in range(0, len(roads_list[1]), road_step[0] + 1):
                     my_range.append(roads_list[1][s])
 
             else:
                 my_range = [roads_list[1][0], roads_list[1][-1]]
 
             finish = roads_list[0]
-
-            for e in [route_builder(graph, start, finish) for start
+            for e in [route_builder(matrix, start, finish,
+                                    road_weight=road_weight,
+                                    pallet_weight=pallet_weight) for start
                       in my_range]:
                 for i in e:
-                    if matrix[i[1] - 1][i[0] - 1] not in {-3, -2}:
+                    if matrix[i[0]][i[1]] not in {-3, -2}:
                         new_road.add(i)
 
             roads_list[0].extend(roads_list.pop(1))
 
+        # соединяем операционные зоны с дорогами
         for i in operation_zones:
-            for j in route_builder(graph, i, roads_list[0]):
-                if matrix[j[1] - 1][j[0] - 1] in {0, 1}:
-                    matrix[j[1] - 1][j[0] - 1] = 4
+            for j in route_builder(matrix, i, roads_list[0],
+                                   road_weight=road_weight,
+                                   pallet_weight=pallet_weight):
+                if matrix[j[0]][j[1]] in {0, 1}:
                     new_road.add(j)
 
         for i in new_road:
-            matrix[i[1] - 1][i[0] - 1] = 4
+            matrix[i[0]][i[1]] = 4
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
-                      map(lambda c: ((c[0] - 1) * size, (c[1] - 1) * size),
+                      map(lambda c: ((c[1]) * size, (c[0]) * size),
                           new_road), size, width_line=width_line,
                       color=(100, 100, 100))
 
         for i in operation_zones:
             matrix[i[1] - 1][i[0] - 1] = -1
 
+        # размещаем зоны ожидания
         await_zone = []
         for i in operation_zones:
             flag = False
@@ -392,6 +425,7 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                 print(
                     f"Не удаётся разместить зону ожидания {i}, вариант: {way}")
 
+        # расставляем недостающие стеллажи
         new_pallets = set()
 
         for i in range(len(matrix)):
@@ -409,15 +443,17 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                           new_pallets), size, width_line=width_line,
                       color=(255, 255, 0))
 
+        # соединяем операционные зоны с зонами ожидания
         new_road = set()
 
         for i in zip(operation_zones, await_zone):
-            for j in route_builder(graph, i[0], i[1]):
-                if matrix[j[1] - 1][j[0] - 1] not in {-3, -2, -1, 2}:
-                    matrix[j[1] - 1][j[0] - 1] = 4
+            for j in route_builder(matrix, i[0], i[1], road_weight=road_weight,
+                                   pallet_weight=pallet_weight):
+                if matrix[j[0]][j[1]] not in {-3, -2, -1, 2}:
                     new_road.add(j)
+
         for i in new_road:
-            matrix[i[1] - 1][i[0] - 1] = 4
+            matrix[i[0]][i[1]] = 4
 
         coloring_cell(f'../tmp_photo/warehouse_roads{way}.png',
                       map(lambda c: ((c[0] - 1) * size, (c[1] - 1) * size),
@@ -430,6 +466,7 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                       size, color=(0, 100, 100),
                       width_line=width_line)
 
+        # размещаем зарядки
         awz = []
         for i in await_zone:
             for j in i:
@@ -512,6 +549,7 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                           walls), size, width_line=width_line,
                       color=(255, 0, 0))
 
+        # выводим метрики, создаём heatmap и json
         matrix_to_json(matrix, f'../graph/graph{way}.json')
         pal, mid_len, charg = score_function(matrix, operation_zones,
                                              f'../heatmaps/heatmap{way}.png')
