@@ -31,8 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         sidebar.innerHTML = `
                             <div class="logotip">
 
-                                <a href="templates/index.html"><img src="static/images/ya.svg" class="logo"></a>
-                                <span class="title">Топология</span>
+                    <a href="/lc" style="display:flex;align-items:center;text-decoration:none;">
+                    <img src="{{url_for('static', filename='images/ya.svg') }}" class="logo"> 
+                    <span class="title">Топология</span>
+                    </a>
                             </div>
                             <div class="zones file-section">
                                 <div class="inputs">
