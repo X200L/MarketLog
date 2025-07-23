@@ -324,6 +324,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Для страницы lc.html (где есть .topology-grid)
+    const topologyGrid = document.querySelector('.topology-grid');
+    if (topologyGrid) {
+        const gridImages = topologyGrid.querySelectorAll('.topology-grid-item img');
+        gridImages.forEach(imgEl => {
+            imgEl.addEventListener('click', function() {
+                const idx = imgEl.getAttribute('data-idx');
+                openImageModal(window.lcImages[idx], window.lcHeatmaps[idx], idx);
+            });
+        });
+    }
+
     resetImagePreview();
     updateClearBtnVisibility();
 });
