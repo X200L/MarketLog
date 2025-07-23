@@ -480,11 +480,18 @@ def handle_shelf_size_input(message):
                 )
                 return
 
-            # Добавляем пользователя в множество ожидающих
-            user_in_queue.add(chat_id)
-
         try:
             shelf_size = int(message.text.strip())
+
+            # Проверяем минимальный размер стеллажа
+            if shelf_size < 10:
+                bot.reply_to(
+                    message,
+                    "❌ Размер стеллажа слишком маленький (меньше 10 пикселей).\n"
+                    "Пожалуйста, введите размер стеллажа снова (не менее 10 пикселей):"
+                )
+                return  # Выходим из функции, оставляя состояние waiting_for_shelf_size = True
+
             user_states[chat_id]['shelf_size'] = shelf_size
             user_states[chat_id]['waiting_for_shelf_size'] = False
 
@@ -493,11 +500,12 @@ def handle_shelf_size_input(message):
             operation_zone_x = user_states[chat_id]['operation_zone_x']
             operation_zone_y = user_states[chat_id]['operation_zone_y']
 
-            # Добавляем запрос в очередь
-            request_queue.put((chat_id, shelf_size, operation_zone_x, operation_zone_y, image_path))
-
-            # Сообщаем пользователю о постановке в очередь
+            # Добавляем пользователя в очередь
             with processing_lock:
+                user_in_queue.add(chat_id)
+                request_queue.put((chat_id, shelf_size, operation_zone_x, operation_zone_y, image_path))
+
+                # Сообщаем пользователю о постановке в очередь
                 queue_size = request_queue.qsize()
                 if current_processing:
                     # Показываем queue_size-1, так как один элемент уже в обработке
@@ -521,7 +529,7 @@ def handle_shelf_size_input(message):
                 user_in_queue.remove(chat_id)
         bot.reply_to(
             message,
-            "Неправильный формат размера. Пожалуйста, введите одно число (размер стеллажа в пикселях)."
+            "❌ Неправильный формат размера. Пожалуйста, введите одно число (размер стеллажа в пикселях, не менее 10):"
         )
     except Exception as e:
         logger.error(f"Ошибка при обработке размера стеллажа: {e}")
@@ -530,7 +538,7 @@ def handle_shelf_size_input(message):
                 user_in_queue.remove(chat_id)
         bot.reply_to(
             message,
-            "Произошла ошибка. Пожалуйста, попробуйте еще раз."
+            "❌ Произошла ошибка. Пожалуйста, попробуйте еще раз."
         )
 @bot.message_handler(func=lambda message: message.text in ['Что делает этот бот?', 'Требования к файлу'])
 def handle_hints(message):
@@ -540,7 +548,6 @@ def handle_hints(message):
         response = """Требования к изображению:
 - Формат: JPG или PNG (будет сохранено как PNG)
 - Размер: не более 10 МБ
-- Минимальное разрешение: 1280x720
 - Удалите лишние детали"""
 
     bot.send_message(message.chat.id, response, reply_markup=create_reply_keyboard())
