@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="logotip">
 
                     <a href="/lc" style="display:flex;align-items:center;text-decoration:none;">
-                    <img src="{{url_for('static', filename='images/ya.svg') }}" class="logo"> 
+                    <img src="ya.svg" class="logo"> 
                     <span class="title">Топология</span>
                     </a>
                             </div>
