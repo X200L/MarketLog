@@ -65,7 +65,7 @@ def mesh_function(image_path, operation_zones,
             cell_middle_color = np.array([0, 0])
             for x_cell in range(size * (ky - 1), size * ky):
                 for y_cell in range(size * (kx - 1), size * kx):
-                    if pixels[x_cell][y_cell][0] >= pixels[x_cell][y_cell][2]:
+                    if (pixels[x_cell][y_cell][0] >= pixels[x_cell][y_cell][2]) and (pixels[x_cell][y_cell][1] < 200):
                         cell_middle_color[0] += 1
                     else:
                         cell_middle_color[1] += 1

@@ -10,11 +10,13 @@ from Mesher.usr_lib.matrix_to_json import matrix_to_json
 from Mesher.usr_lib.score_function import score_function
 from Mesher.usr_lib.dist_on_road import dist_on_road
 from Mesher.usr_lib.get_await_zone import get_await_zone
+from Mesher.usr_lib.create_topology_plan import create_topology_plan
 
 
 def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
               charging=0, road_weight=1, pallet_weight=1,
-              await_zone_size=(2, 2), priority_vec_az=('h', 'v')):
+              await_zone_size=(2, 2), priority_vec_az=('h', 'v'),
+              mode='', input_path='', alpha=0):
     """Функция, выполняющаяя создание топологии
     На вход подаётся матрица и графические параметры.
     Шаг дорог позволяет затавать максимальную длину галлереи стеллажей;
@@ -294,7 +296,20 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                           walls), size, width_line=width_line,
                       color=(255, 0, 0))
 
-        # выводим метрики, создаём heatmap и json
+        # выводим метрики, создаём heatmap и json, и план топологии
+        if mode == 'm':
+            create_topology_plan(f'../tmp_photo/warehouse_roads{way}.png',
+                                 f'../tmp_photo/warehouse_roads{way}.png',
+                                 0,
+                                 f'../topology_plan/topology_plan{way}.png',
+                                 f'../tmp_photo/border_info.json')
+        else:
+            create_topology_plan(input_path,
+                                 f'../tmp_photo/warehouse_roads{way}.png',
+                                 alpha,
+                                 f'../topology_plan/topology_plan{way}.png',
+                                 f'../tmp_photo/border_info.json')
+
         matrix_to_json(matrix, f'../graph/graph{way}.json')
         pal, mid_len, charg = score_function(matrix, operation_zones,
                                              f'../heatmaps/heatmap{way}.png')
@@ -549,7 +564,20 @@ def optimizer(matrix, graphic_data, road_step=(None, None), charging_flag=True,
                           walls), size, width_line=width_line,
                       color=(255, 0, 0))
 
-        # выводим метрики, создаём heatmap и json
+        # выводим метрики, создаём heatmap и json, и план топологии
+        if mode == 'm':
+            create_topology_plan(f'../tmp_photo/warehouse_roads{way}.png',
+                                 f'../tmp_photo/warehouse_roads{way}.png',
+                                 0,
+                                 f'../topology_plan/topology_plan{way}.png',
+                                 f'../tmp_photo/border_info.json')
+        else:
+            create_topology_plan(input_path,
+                                 f'../tmp_photo/warehouse_roads{way}.png',
+                                 alpha,
+                                 f'../topology_plan/topology_plan{way}.png',
+                                 f'../tmp_photo/border_info.json')
+
         matrix_to_json(matrix, f'../graph/graph{way}.json')
         pal, mid_len, charg = score_function(matrix, operation_zones,
                                              f'../heatmaps/heatmap{way}.png')

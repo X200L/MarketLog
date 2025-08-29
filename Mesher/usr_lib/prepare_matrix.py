@@ -1,4 +1,5 @@
 import sys
+import json
 import numpy as np
 
 from PIL import Image, ImageDraw
@@ -10,11 +11,18 @@ def prepare_matrix(matrix):
     """Функция обработки случая, когда на вход программе подаётся матрица"""
 
     # добавляем рамку из препятствий к матрице
+    size = 30
+
     matrix = np.array(matrix)
     matrix = np.pad(matrix, pad_width=2, constant_values=-3)
 
+    with open('../tmp_photo/border_info.json', 'w') as file:
+        json.dump({'left': 2 * size,
+                   'top': 2 * size,
+                   'right': 2 * size,
+                   'bottom': 2 * size}, file, indent=4)
+
     # создаём схему помещения
-    size = 30
     width_line = 1
     new_image = Image.new('RGB', ((len(matrix[0]) * size),
                                   (len(matrix) * size)), color=(255, 0, 0))

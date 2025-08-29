@@ -1,4 +1,5 @@
 from PIL import Image
+import json
 
 
 def add_borders(intput, output, left, right, top, bottom, size, color='red'):
@@ -11,6 +12,12 @@ def add_borders(intput, output, left, right, top, bottom, size, color='red'):
 
     new_width = width + left + right + 2 * size
     new_height = height + top + bottom + 2 * size
+
+    with open('../tmp_photo/border_info.json', 'w') as file:
+        json.dump({'left': left + size,
+                   'top': top + size,
+                   'right': right + size,
+                   'bottom': bottom + size}, file, indent=4)
 
     bordered_image = Image.new('RGB', (new_width, new_height), color)
     bordered_image.paste(image, (left + size, top + size))
