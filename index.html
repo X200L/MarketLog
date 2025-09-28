@@ -2,14 +2,548 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Яндекс Топология</title>
-    <link rel="stylesheet" href="style.css">
 </head>
+<style>
+    :root {
+        --primary-yellow: #FDD329;
+        --hover-yellow: #ffec80;
+        --white: #fff;
+        --light-gray: #F2F2F2;
+        --dark-gray: #4A4A4A;
+        --text-color: #111;
+        --shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+    
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background: var(--light-gray);
+        color: var(--text-color);
+        overflow-x: hidden;
+    }
+    
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        background: var(--white);
+        border-bottom: 1px solid #eee;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 64px;
+    }
+    
+    .header__logo {
+        display: flex;
+        align-items: center;
+        font-size: 1.2rem;
+        gap: 8px;
+    }
+    
+    .header__nav {
+        display: none;
+    }
+    
+    .header__user {
+        display: none;
+    }
+    
+    .header__burger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 44px;
+        height: 44px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        gap: 6px;
+        z-index: 1101;
+        position: relative;
+    }
+    
+    .header__burger span {
+        display: block;
+        width: 28px;
+        height: 3px;
+        background: var(--text-color);
+        border-radius: 2px;
+        transition: 0.3s;
+    }
+    
+    .header__burger.active span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    
+    .header__burger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .header__burger.active span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+    
+    .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        background: var(--white);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        flex-direction: column;
+        align-items: center;
+        padding: 80px 0 24px 0;
+        gap: 0;
+        z-index: 1050;
+        transition: transform 0.3s, opacity 0.3s;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-30px);
+    }
+    
+    .mobile-menu.open {
+        display: flex;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+    
+    .mobile-menu a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding: 18px 0;
+        width: 100vw;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        transition: background 0.2s;
+    }
+    
+    .mobile-menu a:active, .mobile-menu a:focus {
+        background: #f5f5f5;
+    }
+    
+    .mobile-menu-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 1049;
+        transition: opacity 0.3s;
+    }
+    
+    .mobile-menu.open ~ .mobile-menu-backdrop {
+        display: block;
+        opacity: 1;
+    }
+    
+    main {
+        margin-top: 64px;
+        padding: 0 16px;
+    }
+    
+    .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        padding: 24px 16px;
+        margin: 20px auto 0 auto;
+        gap: 24px;
+        max-width: 100%;
+    }
+    
+    .hero__text {
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .hero__text h1 {
+        font-size: 1.4rem;
+        margin-bottom: 24px;
+        line-height: 1.3;
+    }
+    
+    .btn {
+        padding: 14px 24px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .btn-yellow {
+        background: var(--primary-yellow);
+        color: var(--text-color);
+        transition: background 0.2s;
+    }
+    
+    .btn-yellow:hover, .btn-yellow:active {
+        background: var(--hover-yellow);
+    }
+    
+    .hero__img img {
+        max-width: 100%;
+        width: 100%;
+        display: block;
+        border-radius: 8px;
+    }
+    
+    .features, .advantages, .faq, .start, .reviews {
+        margin: 40px auto 0 auto;
+        text-align: center;
+        max-width: 100%;
+    }
+    
+    .features h2, .advantages h2, .faq h2, .start h2, .reviews h2 {
+        font-size: 1.6rem;
+        margin-bottom: 24px;
+    }
+    
+    .features__list, .advantages__list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+    }
+    
+    .feature, .advantage {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        padding: 20px 16px;
+        width: 100%;
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    
+    .advantage:hover {
+        transform: translateY(-6px) scale(1.03);
+    }
+    
+    .feature h3, .advantage h4 {
+        margin-top: 0;
+        margin-bottom: 8px;
+        font-size: 1.2rem;
+    }
+    
+    .faq__list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .faq__item {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+        padding: 0;
+        text-align: left;
+        overflow: hidden;
+    }
+    
+    .faq__question {
+        width: 100%;
+        background: #f7f7f7;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 16px;
+        text-align: left;
+        cursor: pointer;
+        transition: background 0.2s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .faq__question::after {
+        content: '+';
+        font-size: 1.4rem;
+        transition: transform 0.3s;
+    }
+    
+    .faq__question[aria-expanded="true"] {
+        background: #ffe066;
+    }
+    
+    .faq__question[aria-expanded="true"]::after {
+        transform: rotate(45deg);
+    }
+    
+    .faq__answer {
+        max-height: 0;
+        overflow: hidden;
+        background: #fffbe6;
+        font-size: 0.95rem;
+        color: #444;
+        padding: 0 16px;
+        transition: max-height 0.3s, padding 0.3s;
+    }
+    
+    .faq__item.open .faq__answer {
+        max-height: 200px;
+        padding: 12px 16px 16px 16px;
+    }
+    
+    .start__block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        padding: 24px 16px;
+        gap: 24px;
+    }
+    
+    .start__img img {
+        max-width: 100%;
+        width: 100%;
+        display: block;
+        border-radius: 8px;
+    }
+    
+    .start__text {
+        max-width: 100%;
+        text-align: center;
+    }
+    
+    .start__text h3 {
+        font-size: 1.2rem;
+        margin-bottom: 24px;
+    }
+    
+    .footer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: var(--white);
+        padding: 20px 16px;
+        font-size: 0.9rem;
+        border-top: 1px solid #eee;
+        margin-top: 40px;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .footer__logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+    }
+    
+    .footer__center, .footer__right {
+        color: var(--dark-gray);
+    }
+    
+    /* Модальное окно */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+    }
+    
+    .modal__content {
+        background: var(--white);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .modal__close {
+        position: absolute;
+        right: 16px;
+        top: 12px;
+        font-size: 1.8rem;
+        color: #888;
+        cursor: pointer;
+        background: none;
+        border: none;
+        line-height: 1;
+    }
+    
+    .modal__input {
+        width: 100%;
+        margin: 12px 0;
+        padding: 12px 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+    
+    .modal__btn {
+        width: 100%;
+        margin-top: 16px;
+    }
+    
+    /* Анимации появления элементов при скролле */
+    .feature, .advantage, .faq__item, .start__block {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s, transform 0.5s;
+    }
+    
+    .feature.show, .advantage.show, .faq__item.show, .start__block.show {
+        opacity: 1;
+        transform: none;
+    }
+    
+    /* Медиа-запросы для планшетов и десктопов */
+    @media (min-width: 768px) {
+        .header {
+            padding: 12px 32px;
+            position: static;
+        }
+        
+        .header__nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        
+        .header__nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        .header__burger {
+            display: none;
+        }
+        
+        .mobile-menu, .mobile-menu-backdrop {
+            display: none !important;
+        }
+        
+        main {
+            margin-top: 0;
+            padding: 0 32px;
+        }
+        
+        .hero {
+            flex-direction: row;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 40px auto 0 auto;
+            padding: 40px 48px;
+            gap: 32px;
+        }
+        
+        .hero__text {
+            max-width: 420px;
+            text-align: left;
+        }
+        
+        .hero__text h1 {
+            font-size: 1.5rem;
+            margin-bottom: 32px;
+        }
+        
+        .btn {
+            width: auto;
+            max-width: none;
+        }
+        
+        .features, .advantages, .faq, .start, .reviews {
+            max-width: 1200px;
+            margin: 48px auto 0 auto;
+        }
+        
+        .features__list, .advantages__list {
+            flex-direction: row;
+            justify-content: center;
+            gap: 32px;
+        }
+        
+        .feature, .advantage {
+            width: 300px;
+            min-height: 120px;
+            text-align: left;
+        }
+        
+        .start__block {
+            flex-direction: row;
+            align-items: center;
+            padding: 40px 48px;
+            gap: 48px;
+            justify-content: center;
+        }
+        
+        .start__text {
+            max-width: 420px;
+            text-align: left;
+        }
+        
+        .footer {
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 24px 48px;
+            font-size: 1rem;
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .header__user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header__login {
+            border: 1px solid #ccc;
+            background: var(--white);
+            border-radius: 8px;
+            padding: 4px 16px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    }
+</style>
 <body>
     <header class="header">
         <div class="header__logo">
-            <img src="ya.svg" alt="Яндекс Топология" height="32">
+            <img src="images/ya.svg" alt="Яндекс Топология" height="32">
             <span>Топология</span>
         </div>
         <nav class="header__nav">
@@ -18,12 +552,12 @@
             <a href="#faq">FAQ</a>
             <a href="#start">Начать</a>
         </nav>
+        <div class="header__user">
+            <button class="header__login">Войти</button>
+        </div>
         <button class="header__burger" id="burgerBtn" aria-label="Открыть меню" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>
-        <div class="header__user">
-            <img src="ya.svg" alt="Профиль" height="28" style="border-radius:50%;background:#eee;">
-        </div>
         <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
             <a href="#about">О проекте</a>
             <a href="#advantages">Преимущества</a>
@@ -36,7 +570,7 @@
         <section class="hero" id="about">
             <div class="hero__text">
                 <h1>Яндекс Топология — сервис для проектирования топологии логистических систем и оптимизации складов</h1>
-                <button class="btn btn-yellow">Начать пользоваться</button>
+                <button class="btn btn-yellow" id="startUsingBtn">Начать пользоваться</button>
             </div>
             <div class="hero__img">
                 <img src="new.png" alt="Скриншот ноутбука" loading="lazy">
@@ -105,7 +639,7 @@
                 </div>
                 <div class="start__text">
                     <h3>Простой и удобный сервис для проектирования топологии логистических систем и оптимизации складов.</h3>
-                    <button class="btn btn-yellow">Начать пользоваться</button>
+                    <button class="btn btn-yellow" id="startUsingBtn2">Начать пользоваться</button>
                 </div>
             </div>
         </section>
@@ -118,6 +652,140 @@
         <p class="footer__center">Яндекс Топология 2025</p>
         <p class="footer__right">frogeesoft.team@gmail.com</p>
     </footer>
-    <script src="script.js"></script>
+
+    <!-- Модальное окно входа -->
+    <div class="modal" id="loginModal">
+        <div class="modal__content">
+            <button class="modal__close" id="modalClose">&times;</button>
+            <h2>Войти в аккаунт</h2>
+            <input type="email" class="modal__input" placeholder="Email">
+            <input type="password" class="modal__input" placeholder="Пароль">
+            <button class="btn btn-yellow modal__btn">Войти</button>
+            <p style="margin-top: 16px; font-size: 0.9rem;">Нет аккаунта? <a href="#" style="color: #0066cc;">Зарегистрироваться</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Мобильное меню
+        const burgerBtn = document.getElementById('burgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+        
+        burgerBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            const expanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !expanded);
+            mobileMenu.setAttribute('aria-hidden', expanded);
+        });
+        
+        mobileMenuBackdrop.addEventListener('click', function() {
+            burgerBtn.classList.remove('active');
+            mobileMenu.classList.remove('open');
+            burgerBtn.setAttribute('aria-expanded', 'false');
+            mobileMenu.setAttribute('aria-hidden', 'true');
+        });
+        
+        // Закрытие меню при клике на ссылку
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                burgerBtn.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                burgerBtn.setAttribute('aria-expanded', 'false');
+                mobileMenu.setAttribute('aria-hidden', 'true');
+            });
+        });
+        
+        // Аккордеон FAQ
+        const faqQuestions = document.querySelectorAll('.faq__question');
+        
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const item = this.parentNode;
+                const isOpen = item.classList.contains('open');
+                
+                // Закрываем все открытые элементы
+                document.querySelectorAll('.faq__item.open').forEach(openItem => {
+                    if (openItem !== item) {
+                        openItem.classList.remove('open');
+                        openItem.querySelector('.faq__question').setAttribute('aria-expanded', 'false');
+                    }
+                });
+                
+                // Переключаем текущий элемент
+                item.classList.toggle('open');
+                this.setAttribute('aria-expanded', !isOpen);
+            });
+        });
+        
+        // Анимация появления элементов при скролле
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, observerOptions);
+        
+        // Наблюдаем за элементами, которые должны появляться при скролле
+        const animatedElements = document.querySelectorAll('.feature, .advantage, .faq__item, .start__block');
+        animatedElements.forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Модальное окно
+        const startUsingBtn = document.getElementById('startUsingBtn');
+        const startUsingBtn2 = document.getElementById('startUsingBtn2');
+        const loginModal = document.getElementById('loginModal');
+        const modalClose = document.getElementById('modalClose');
+        
+        function openModal() {
+            loginModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() {
+            loginModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        startUsingBtn.addEventListener('click', openModal);
+        startUsingBtn2.addEventListener('click', openModal);
+        modalClose.addEventListener('click', closeModal);
+        
+        // Закрытие модального окна при клике вне его
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === loginModal) {
+                closeModal();
+            }
+        });
+        
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerHeight = document.querySelector('.header').offsetHeight;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
-</html> 
+</html>
